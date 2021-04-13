@@ -1,5 +1,4 @@
 import React from "react";
-import {Divider} from 'antd';
 
 export default function StartPage(props) {
 
