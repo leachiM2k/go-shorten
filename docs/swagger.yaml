@@ -1,0 +1,184 @@
+basePath: /api
+definitions:
+  shorten.CreateRequest:
+    properties:
+      attributes:
+        additionalProperties: true
+        type: object
+      code:
+        type: string
+      expiresAt:
+        type: string
+      link:
+        type: string
+      maxCount:
+        type: integer
+      owner:
+        type: string
+      startTime:
+        type: string
+    type: object
+  shorten.Entity:
+    properties:
+      attributes:
+        additionalProperties: true
+        type: object
+      code:
+        type: string
+      count:
+        type: integer
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      link:
+        type: string
+      maxCount:
+        type: integer
+      owner:
+        type: string
+      startTime:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  shorten.UpdateRequest:
+    properties:
+      attributes:
+        additionalProperties: true
+        type: object
+      expiresAt:
+        type: string
+      link:
+        type: string
+      maxCount:
+        type: integer
+      startTime:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: leachiM2k@leachiM2k.de
+    name: leachiM2k
+    url: https://github.com/leachim2k/go-shorten
+  description: URL Shortener
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go Shorten API
+  version: "1.0"
+paths:
+  /shorten/:
+    post:
+      consumes:
+      - application/json
+      description: Create a new short. Create random code if not specified.
+      operationId: create
+      parameters:
+      - description: Create Request
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/shorten.CreateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shorten.Entity'
+      summary: Add a new short
+  /shorten/{code}:
+    delete:
+      description: Delete a short
+      operationId: delete
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+      summary: Delete a short
+    get:
+      consumes:
+      - application/json
+      description: Get all stored information for a specified short
+      operationId: read
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shorten.Entity'
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Get short's info
+    put:
+      consumes:
+      - application/json
+      description: Updates several fields of a short, while maintaining count, owner and creation date
+      operationId: update
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      - description: Update Request
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/shorten.UpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shorten.Entity'
+      summary: Update a short
+  /shorten/handle/{code}:
+    get:
+      consumes:
+      - application/json
+      description: Return the right link for short code or "not found" if expired, not started or max count was reached
+      operationId: handle
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "302":
+          description: Link to follow
+          schema:
+            type: string
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Handle a short
+swagger: "2.0"
+x-extension-openapi:
+  example: value on a json format

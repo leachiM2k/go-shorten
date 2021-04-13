@@ -1,0 +1,274 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "URL Shortener",
+        "title": "Go Shorten API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "leachiM2k",
+            "url": "https://github.com/leachim2k/go-shorten",
+            "email": "leachiM2k@leachiM2k.de"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/shorten/": {
+            "post": {
+                "description": "Create a new short. Create random code if not specified.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Add a new short",
+                "operationId": "create",
+                "parameters": [
+                    {
+                        "description": "Create Request",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shorten.CreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/shorten.Entity"
+                        }
+                    }
+                }
+            }
+        },
+        "/shorten/handle/{code}": {
+            "get": {
+                "description": "Return the right link for short code or \"not found\" if expired, not started or max count was reached",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Handle a short",
+                "operationId": "handle",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Link to follow",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/shorten/{code}": {
+            "get": {
+                "description": "Get all stored information for a specified short",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get short's info",
+                "operationId": "read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/shorten.Entity"
+                        }
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Updates several fields of a short, while maintaining count, owner and creation date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update a short",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update Request",
+                        "name": "account",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/shorten.UpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/shorten.Entity"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a short",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete a short",
+                "operationId": "delete",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "shorten.CreateRequest": {
+            "type": "object",
+            "properties": {
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "code": {
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "maxCount": {
+                    "type": "integer"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "shorten.Entity": {
+            "type": "object",
+            "properties": {
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "code": {
+                    "type": "string"
+                },
+                "count": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "maxCount": {
+                    "type": "integer"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "shorten.UpdateRequest": {
+            "type": "object",
+            "properties": {
+                "attributes": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "expiresAt": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "maxCount": {
+                    "type": "integer"
+                },
+                "startTime": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "x-extension-openapi": {
+        "example": "value on a json format"
+    }
+}

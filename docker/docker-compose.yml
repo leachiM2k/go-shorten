@@ -1,0 +1,24 @@
+# due to travis-ci we have to use 3.3
+version: '3.3'
+
+services:
+  shorten-postgres:
+    image: postgres:12.3-alpine
+    volumes:
+      - "./postgres:/docker-entrypoint-initdb.d"
+    ports:
+      - "16541:5432"
+    environment:
+      - POSTGRES_DB=shorten_dev
+      - POSTGRES_USER=shorten
+      - POSTGRES_PASSWORD=shorten
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks:
+      - ca-network
+
+networks:
+  ca-network:

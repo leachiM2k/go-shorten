@@ -1,0 +1,12 @@
+version: 1
+meta:
+  owner:
+  - team: infrastructure
+  realm:
+    name: tools
+deployments:
+- serviceLevel: minor
+  definition:
+    localRef: t8r2/*.yaml
+provides:
+- imageRef: fashionid/self-service-portal-backend
