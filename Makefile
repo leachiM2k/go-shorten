@@ -24,7 +24,7 @@ container: check-image build
 
 ifeq ($(YES), 1)
 push-container: check-image container
-	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
 	docker push $(IMAGE):$(TAG)
 else
 push-container:
