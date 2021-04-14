@@ -1,6 +1,6 @@
 ARCH ?= amd64
 OS ?= linux
-BUILD_IMAGE ?= golang:1.14
+BUILD_IMAGE ?= golang:1.16
 GOPATH ?= $(shell go env GOPATH)
 GOPATH_SRC := $(GOPATH)/src/
 CURRENT_WORK_DIR := $(shell pwd)
@@ -24,6 +24,7 @@ container: check-image build
 
 ifeq ($(YES), 1)
 push-container: check-image container
+	echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 	docker push $(IMAGE):$(TAG)
 else
 push-container:
