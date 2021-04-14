@@ -4,17 +4,18 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jonboulle/clockwork"
+	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"log"
 	"net/http"
 	"sync"
 )
 
-var awsHandler *ShortenHandler
+var awsHandler *Handler
 var m sync.RWMutex
 
 type ApiHandler struct {
 	Mutex   sync.RWMutex
-	Handler *ShortenHandler
+	Handler *Handler
 }
 
 func NewApiHandler() *ApiHandler {
@@ -28,12 +29,12 @@ func NewApiHandler() *ApiHandler {
 	}
 }
 
-func GetHandler() (*ShortenHandler, error) {
+func GetHandler() (*Handler, error) {
 	if awsHandler == nil {
 		m.Lock()
 		defer m.Unlock()
 
-		backend := NewInmemoryBackend()
+		backend := dataservice.GetDataServiceByConfig()
 
 		handler := NewHandler(clockwork.NewRealClock(), backend)
 		return handler, nil
@@ -59,7 +60,7 @@ func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Success 200 {object} Entity
+// @Success 200 {object} dataservice.Entity
 // @Failure 500 {string} string "fail"
 // @Router /shorten/{code} [get]
 func (m *ApiHandler) GetHandler(ctx *gin.Context) {
@@ -128,8 +129,8 @@ func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
 // @ID create
 // @Accept  json
 // @Produce  json
-// @Param account body CreateRequest true "Create Request"
-// @Success 200 {object} Entity
+// @Param account body dataservice.CreateRequest true "Create Request"
+// @Success 200 {object} dataservice.Entity
 // @Router /shorten/ [post]
 func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 	if m.Handler == nil {
@@ -137,7 +138,7 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 		return
 	}
 
-	var createRequest CreateRequest
+	var createRequest dataservice.CreateRequest
 	err := ctx.BindJSON(&createRequest)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -165,8 +166,8 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Param account body UpdateRequest true "Update Request"
-// @Success 200 {object} Entity
+// @Param account body dataservice.UpdateRequest true "Update Request"
+// @Success 200 {object} dataservice.Entity
 // @Router /shorten/{code} [put]
 func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 	if m.Handler == nil {
@@ -174,7 +175,7 @@ func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 		return
 	}
 
-	var updateRequest UpdateRequest
+	var updateRequest dataservice.UpdateRequest
 	err := ctx.BindJSON(&updateRequest)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

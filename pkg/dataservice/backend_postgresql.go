@@ -1,7 +1,10 @@
-package shorten
+package dataservice
 
 import (
+	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
 	"github.com/leachim2k/go-shorten/pkg/models"
+	logOriginal "log"
+	"os"
 	"time"
 )
 
@@ -9,6 +12,8 @@ type dbBackend struct {
 }
 
 func NewDBBackend() Backend {
+	models.InitDB("postgres", options.Current.DBConnection, logOriginal.New(os.Stdout, "[sql] ", logOriginal.LstdFlags))
+
 	return &dbBackend{}
 }
 
@@ -49,8 +54,8 @@ func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
 }
 
 func (m *dbBackend) Read(code string) (*Entity, error) {
-	entity, err := models.GetShortenerByCode(code)
-	if err != nil {
+	entity, err := models.GetShortByCode(code)
+	if entity == nil || err != nil {
 		return nil, err
 	}
 
@@ -66,7 +71,7 @@ func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
 		ExpiresAt:  entity.ExpiresAt,
 		Attributes: (*models.Attributes)(entity.Attributes),
 	}
-	_, err := models.UpdateShortener(&dbEntity)
+	_, err := models.UpdateShort(&dbEntity)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +80,7 @@ func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
 }
 
 func (m *dbBackend) Delete(code string) error {
-	err := models.DeleteShortenerByCode(code)
+	err := models.DeleteShortByCode(code)
 	if err != nil {
 		return err
 	}

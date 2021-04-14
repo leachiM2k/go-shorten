@@ -36,7 +36,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/shorten.CreateRequest"
+                            "$ref": "#/definitions/dataservice.CreateRequest"
                         }
                     }
                 ],
@@ -44,7 +44,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/shorten.Entity"
+                            "$ref": "#/definitions/dataservice.Entity"
                         }
                     }
                 }
@@ -110,7 +110,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/shorten.Entity"
+                            "$ref": "#/definitions/dataservice.Entity"
                         }
                     },
                     "500": {
@@ -145,7 +145,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/shorten.UpdateRequest"
+                            "$ref": "#/definitions/dataservice.UpdateRequest"
                         }
                     }
                 ],
@@ -153,7 +153,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/shorten.Entity"
+                            "$ref": "#/definitions/dataservice.Entity"
                         }
                     }
                 }
@@ -183,7 +183,7 @@
         }
     },
     "definitions": {
-        "shorten.CreateRequest": {
+        "dataservice.CreateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -210,7 +210,7 @@
                 }
             }
         },
-        "shorten.Entity": {
+        "dataservice.Entity": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -246,7 +246,7 @@
                 }
             }
         },
-        "shorten.UpdateRequest": {
+        "dataservice.UpdateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {

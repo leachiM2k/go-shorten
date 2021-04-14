@@ -92,6 +92,9 @@ github.com/mrcrgl/pflog/pkg/registry
 # github.com/mrcrgl/timef v0.0.1
 ## explicit
 github.com/mrcrgl/timef
+# github.com/pkg/errors v0.8.1
+## explicit
+github.com/pkg/errors
 # github.com/satori/go.uuid v1.2.0
 ## explicit
 github.com/satori/go.uuid

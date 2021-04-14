@@ -1,25 +1,28 @@
 package models
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	_ "github.com/lib/pq"
+	e "github.com/pkg/errors"
 	"time"
 )
 
 type ShortenerItem struct {
-	ID         int
-	Owner      string
-	Code       string
-	Link       string
-	Count      int
-	MaxCount   int
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	StartTime  *time.Time
-	ExpiresAt  *time.Time
-	Attributes *Attributes
+	ID          int
+	Owner       string
+	Code        string
+	Link        string
+	Description string
+	Count       int
+	MaxCount    int
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	StartTime   *time.Time
+	ExpiresAt   *time.Time
+	Attributes  *Attributes
 }
 
 type Attributes map[string]interface{}
@@ -43,8 +46,8 @@ func (a *Attributes) Scan(value interface{}) error {
 
 func AddShort(item ShortenerItem) error {
 	_, err := db.Exec(
-		"INSERT INTO shortener (owner, code, link, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
-		item.Owner, item.Code, item.Link, item.Count, item.MaxCount, item.CreatedAt, item.UpdatedAt, item.StartTime, item.ExpiresAt, item.Attributes)
+		"INSERT INTO shortener (owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+		item.Owner, item.Code, item.Link, item.Description, item.Count, item.MaxCount, item.CreatedAt, item.UpdatedAt, item.StartTime, item.ExpiresAt, item.Attributes)
 	if err != nil {
 		return err
 	}
@@ -52,8 +55,8 @@ func AddShort(item ShortenerItem) error {
 	return nil
 }
 
-func AllShortenerByOwner(owner string) ([]*ShortenerItem, error) {
-	rows, err := db.Query("SELECT id, owner, code, link, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE owner = $1", owner)
+func AllShortsByOwner(owner string) ([]*ShortenerItem, error) {
+	rows, err := db.Query("SELECT id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE owner = $1", owner)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +65,7 @@ func AllShortenerByOwner(owner string) ([]*ShortenerItem, error) {
 	teams := make([]*ShortenerItem, 0)
 	for rows.Next() {
 		item := new(ShortenerItem)
-		err := rows.Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
+		err := rows.Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Description, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
 		if err != nil {
 			return nil, err
 		}
@@ -74,27 +77,34 @@ func AllShortenerByOwner(owner string) ([]*ShortenerItem, error) {
 	return teams, nil
 }
 
-func GetShortenerByCode(code string) (*ShortenerItem, error) {
+func GetShortByCode(code string) (*ShortenerItem, error) {
 	item := new(ShortenerItem)
-	err := db.QueryRow("SELECT id, owner, code, link, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE code = $1", code).Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
+	err := db.QueryRow(
+		"SELECT id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE code = $1", code,
+	).Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Description, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
 	if err != nil {
+		if e.Cause(err) == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
 	return item, nil
 }
 
-func UpdateShortener(item *ShortenerItem) (*ShortenerItem, error) {
+func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
 	_, err := db.Exec(
 		"UPDATE shortener SET "+
 			"link = $1, "+
-			"maxCount = $2, "+
-			"updatedAt = $3, "+
-			"startTime = $4, "+
-			"expiresAt = $5, "+
-			"attributes = $6 "+
-			"WHERE code = $7",
+			"description = $2, "+
+			"maxCount = $3, "+
+			"updatedAt = $4, "+
+			"startTime = $5 "+
+			"expiresAt = $6, "+
+			"attributes = $7 "+
+			"WHERE code = $8",
 		item.Link,
+		item.Description,
 		item.MaxCount,
 		time.Now(),
 		item.StartTime,
@@ -109,7 +119,7 @@ func UpdateShortener(item *ShortenerItem) (*ShortenerItem, error) {
 	return item, nil
 }
 
-func DeleteShortenerByCode(code string) error {
+func DeleteShortByCode(code string) error {
 	_, err := db.Exec("DELETE FROM shortener WHERE code = $1", code)
 	if err != nil {
 		return err

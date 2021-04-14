@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  shorten.CreateRequest:
+  dataservice.CreateRequest:
     properties:
       attributes:
         additionalProperties: true
@@ -18,7 +18,7 @@ definitions:
       startTime:
         type: string
     type: object
-  shorten.Entity:
+  dataservice.Entity:
     properties:
       attributes:
         additionalProperties: true
@@ -42,7 +42,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  shorten.UpdateRequest:
+  dataservice.UpdateRequest:
     properties:
       attributes:
         additionalProperties: true
@@ -82,14 +82,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/shorten.CreateRequest'
+          $ref: '#/definitions/dataservice.CreateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/shorten.Entity'
+            $ref: '#/definitions/dataservice.Entity'
       summary: Add a new short
   /shorten/{code}:
     delete:
@@ -124,7 +124,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/shorten.Entity'
+            $ref: '#/definitions/dataservice.Entity'
         "500":
           description: fail
           schema:
@@ -146,14 +146,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/shorten.UpdateRequest'
+          $ref: '#/definitions/dataservice.UpdateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/shorten.Entity'
+            $ref: '#/definitions/dataservice.Entity'
       summary: Update a short
   /shorten/handle/{code}:
     get:

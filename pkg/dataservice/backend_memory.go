@@ -1,4 +1,4 @@
-package shorten
+package dataservice
 
 import (
 	"sync"
@@ -11,7 +11,7 @@ type backend struct {
 }
 
 func NewInmemoryBackend() Backend {
-	return &backend {
+	return &backend{
 		entityCache: map[string]Entity{},
 	}
 }

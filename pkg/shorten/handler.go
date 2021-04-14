@@ -2,25 +2,24 @@ package shorten
 
 import (
 	"github.com/jonboulle/clockwork"
+	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/mrcrgl/pflog/log"
 	"time"
 )
 
-type ShortenHandler struct {
-	Clock       clockwork.Clock
-	EntityCache map[string]Entity
-	Backend     Backend
+type Handler struct {
+	Clock   clockwork.Clock
+	Backend dataservice.Backend
 }
 
-func NewHandler(clock clockwork.Clock, backend Backend) *ShortenHandler {
-	return &ShortenHandler{
-		Clock:       clock,
-		EntityCache: map[string]Entity{},
-		Backend:     backend,
+func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
+	return &Handler{
+		Clock:   clock,
+		Backend: backend,
 	}
 }
 
-func (m *ShortenHandler) Get(code string) (*Entity, error) {
+func (m *Handler) Get(code string) (*dataservice.Entity, error) {
 	entity, err := m.Backend.Read(code)
 	if err != nil {
 		log.Infof("error during read from backend: %s", err)
@@ -34,7 +33,7 @@ func (m *ShortenHandler) Get(code string) (*Entity, error) {
 	return entity, nil
 }
 
-func (m *ShortenHandler) ConvertEntityToLink(entity *Entity) (string, error) {
+func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error) {
 	if entity == nil {
 		return "", nil
 	}
@@ -46,16 +45,16 @@ func (m *ShortenHandler) ConvertEntityToLink(entity *Entity) (string, error) {
 	if entity.StartTime != nil && entity.StartTime.After(time.Now()) {
 		return "", nil
 	}
-/*
-	m.Mutex.Lock()
-	entity.Count += 1
-	m.EntityCache[entity.Code] = *entity
-	m.Mutex.Unlock()
-*/
+	/*
+		m.Mutex.Lock()
+		entity.Count += 1
+		m.EntityCache[entity.Code] = *entity
+		m.Mutex.Unlock()
+	*/
 	return entity.Link, nil
 }
 
-func (m *ShortenHandler) Add(request CreateRequest) (*Entity, error) {
+func (m *Handler) Add(request dataservice.CreateRequest) (*dataservice.Entity, error) {
 	entity, err := m.Backend.Create(request)
 	if err != nil {
 		return nil, err
@@ -63,11 +62,11 @@ func (m *ShortenHandler) Add(request CreateRequest) (*Entity, error) {
 	return entity, nil
 }
 
-func (m *ShortenHandler) Delete(code string) error {
+func (m *Handler) Delete(code string) error {
 	return m.Backend.Delete(code)
 }
 
-func (m *ShortenHandler) Update(code string, request UpdateRequest) (*Entity, error) {
+func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*dataservice.Entity, error) {
 	entity, err := m.Backend.Read(code)
 	if entity == nil || err != nil {
 		return nil, err

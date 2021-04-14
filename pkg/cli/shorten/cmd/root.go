@@ -5,12 +5,9 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	_ "github.com/leachim2k/go-shorten/docs"
-	"github.com/leachim2k/go-shorten/pkg/models"
 	shortenServer "github.com/leachim2k/go-shorten/pkg/server"
 	"github.com/mrcrgl/pflog/log"
-	logOriginal "log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -33,8 +30,6 @@ func NewRootCommand() *cobra.Command {
 			if err != nil {
 				log.Fatalf("config validation failed: %v", err)
 			}
-
-			models.InitDB("postgres", options.Current.DBConnection, logOriginal.New(os.Stdout, "[sql] ", logOriginal.LstdFlags))
 
 			r := gin.New()
 
@@ -78,6 +73,7 @@ func NewRootCommand() *cobra.Command {
 
 	cmd.Flags().IntVar(&options.Current.RESTListenPort, "rest-listen-port", options.Current.RESTListenPort, "tcp port to listen for HTTP requests")
 	cmd.Flags().StringVar(&options.Current.DBConnection, "db-connection", options.Current.DBConnection, "database connection string")
+	cmd.Flags().StringVar(&options.Current.StorageBackend, "storage", options.Current.StorageBackend, "storage backend for shorts (memory, postgresql, mysql, file)")
 
 	return cmd
 }
