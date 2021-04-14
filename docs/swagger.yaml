@@ -7,6 +7,8 @@ definitions:
         type: object
       code:
         type: string
+      description:
+        type: string
       expiresAt:
         type: string
       link:
@@ -29,6 +31,8 @@ definitions:
         type: integer
       createdAt:
         type: string
+      description:
+        type: string
       expiresAt:
         type: string
       link:
@@ -47,6 +51,8 @@ definitions:
       attributes:
         additionalProperties: true
         type: object
+      description:
+        type: string
       expiresAt:
         type: string
       link:

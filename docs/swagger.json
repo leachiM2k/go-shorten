@@ -193,6 +193,9 @@
                 "code": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "expiresAt": {
                     "type": "string"
                 },
@@ -226,6 +229,9 @@
                 "createdAt": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "expiresAt": {
                     "type": "string"
                 },
@@ -252,6 +258,9 @@
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true
+                },
+                "description": {
+                    "type": "string"
                 },
                 "expiresAt": {
                     "type": "string"

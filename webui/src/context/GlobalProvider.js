@@ -4,6 +4,8 @@ import client from '../lib/client-fetch';
 import {message} from 'antd';
 
 const initialState = {
+    loggedIn: false,
+    user: null,
     teamsLoading: false,
     teams: null,
 };
@@ -81,10 +83,26 @@ const GlobalProvider = ({children}) => {
         });
     }
 
+    const setUser = user => {
+        dispatch({
+            type: ReducerActions.setUser,
+            payload: user
+        })
+    }
+
+    const setLoggedIn = isLoggedIn => {
+        dispatch({
+            type: ReducerActions.setLoggedIn,
+            payload: isLoggedIn
+        })
+    }
+
     return (
         <GlobalContext.Provider value={{
             state,
             dispatch,
+            setUser,
+            setLoggedIn,
             apiGetTeamStructure,
             apiGetGithubOrgs,
             setCurrentGithubOrg,

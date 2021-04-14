@@ -1,13 +1,25 @@
 export const ReducerActions = {
+    setUser: 'SET_USER',
     setTeams: 'SET_TEAMS',
     setTeamsLoading: 'SET_TEAMS_LOADING',
     setGithubOrgs: 'SET_GITHUB_ORGS',
     setGithubOrgsLoading: 'SET_GITHUB_ORGS_LOADING',
-    setGithubOrgCurrent: 'SET_GITHUB_ORG_CURRENT'
+    setGithubOrgCurrent: 'SET_GITHUB_ORG_CURRENT',
+    setLoggedIn: 'SET_LOGGEDIN',
 }
 
 const Reducer = (state, action) => {
     switch (action.type) {
+        case ReducerActions.setUser:
+            return {
+                ...state,
+                user: action.payload
+            };
+        case ReducerActions.setLoggedIn:
+            return {
+                ...state,
+                loggedIn: action.payload
+            };
         case ReducerActions.setTeams:
             return {
                 ...state,

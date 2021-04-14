@@ -45,12 +45,17 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 	if entity.StartTime != nil && entity.StartTime.After(time.Now()) {
 		return "", nil
 	}
-	/*
-		m.Mutex.Lock()
-		entity.Count += 1
-		m.EntityCache[entity.Code] = *entity
-		m.Mutex.Unlock()
-	*/
+
+	if entity.MaxCount != 0 && entity.MaxCount >= entity.Count {
+		return "", nil
+	}
+
+	entity.Count += 1
+	_, err := m.Backend.Update(entity)
+	if err != nil {
+		log.Warningf("Could not update short count: %s", err)
+	}
+
 	return entity.Link, nil
 }
 

@@ -208,6 +208,9 @@ var doc = `{
                 "code": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "expiresAt": {
                     "type": "string"
                 },
@@ -241,6 +244,9 @@ var doc = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
                 "expiresAt": {
                     "type": "string"
                 },
@@ -267,6 +273,9 @@ var doc = `{
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true
+                },
+                "description": {
+                    "type": "string"
                 },
                 "expiresAt": {
                     "type": "string"
