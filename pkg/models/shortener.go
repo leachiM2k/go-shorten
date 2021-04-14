@@ -46,8 +46,20 @@ func (a *Attributes) Scan(value interface{}) error {
 
 func AddShort(item ShortenerItem) error {
 	_, err := db.Exec(
-		"INSERT INTO shortener (owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
-		item.Owner, item.Code, item.Link, item.Description, item.Count, item.MaxCount, item.CreatedAt, item.UpdatedAt, item.StartTime, item.ExpiresAt, item.Attributes)
+		"INSERT INTO shortener "+
+			"(owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes) "+
+			"VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+		item.Owner,
+		item.Code,
+		item.Link,
+		item.Description,
+		item.Count,
+		item.MaxCount,
+		item.CreatedAt,
+		item.UpdatedAt,
+		item.StartTime,
+		item.ExpiresAt,
+		item.Attributes)
 	if err != nil {
 		return err
 	}
@@ -56,7 +68,12 @@ func AddShort(item ShortenerItem) error {
 }
 
 func AllShortsByOwner(owner string) ([]*ShortenerItem, error) {
-	rows, err := db.Query("SELECT id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE owner = $1", owner)
+	rows, err := db.Query(
+		"SELECT "+
+			"id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes "+
+			"FROM shortener "+
+			"WHERE owner = $1",
+		owner)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +82,19 @@ func AllShortsByOwner(owner string) ([]*ShortenerItem, error) {
 	teams := make([]*ShortenerItem, 0)
 	for rows.Next() {
 		item := new(ShortenerItem)
-		err := rows.Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Description, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
+		err := rows.Scan(
+			&item.ID,
+			&item.Owner,
+			&item.Code,
+			&item.Link,
+			&item.Description,
+			&item.Count,
+			&item.MaxCount,
+			&item.CreatedAt,
+			&item.UpdatedAt,
+			&item.StartTime,
+			&item.ExpiresAt,
+			&item.Attributes)
 		if err != nil {
 			return nil, err
 		}
@@ -80,8 +109,23 @@ func AllShortsByOwner(owner string) ([]*ShortenerItem, error) {
 func GetShortByCode(code string) (*ShortenerItem, error) {
 	item := new(ShortenerItem)
 	err := db.QueryRow(
-		"SELECT id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes FROM shortener WHERE code = $1", code,
-	).Scan(&item.ID, &item.Owner, &item.Code, &item.Link, &item.Description, &item.Count, &item.MaxCount, &item.CreatedAt, &item.UpdatedAt, &item.StartTime, &item.ExpiresAt, &item.Attributes)
+		"SELECT "+
+			"id, owner, code, link, description, count, maxCount, createdAt, updatedAt, startTime, expiresAt, attributes "+
+			"FROM shortener "+
+			"WHERE code = $1",
+		code).Scan(
+		&item.ID,
+		&item.Owner,
+		&item.Code,
+		&item.Link,
+		&item.Description,
+		&item.Count,
+		&item.MaxCount,
+		&item.CreatedAt,
+		&item.UpdatedAt,
+		&item.StartTime,
+		&item.ExpiresAt,
+		&item.Attributes)
 	if err != nil {
 		if e.Cause(err) == sql.ErrNoRows {
 			return nil, nil
