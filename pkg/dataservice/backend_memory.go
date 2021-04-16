@@ -10,6 +10,11 @@ type backend struct {
 	entityCache map[string]Entity
 }
 
+func (m *backend) All(owner string) (*[]*Entity, error) {
+	// TODO: implement me
+	panic("implement me")
+}
+
 func NewInmemoryBackend() Backend {
 	return &backend{
 		entityCache: map[string]Entity{},

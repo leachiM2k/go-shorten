@@ -46,9 +46,10 @@ func shortenRouter(apiRoute *gin.RouterGroup) {
 
 	r := apiRoute.Group("/shorten")
 	{
-		r.GET("/", apiRouting.MissingCodeHandler)
 		r.PUT("/", apiRouting.MissingCodeHandler)
 		r.DELETE("/", apiRouting.MissingCodeHandler)
+
+		r.GET("/", apiRouting.GetAllHandler)
 
 		r.POST("/", apiRouting.AddHandler)
 		r.GET("/:code", apiRouting.GetHandler)

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "FADI - Self Service Board",
+  "short_name": "Go Shorten",
+  "name": "Go Shorten - Yet Another Shortener",
   "icons": [
     { "src": "logo-192x192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "logo-512x512.png", "sizes": "512x512", "type": "image/png" },

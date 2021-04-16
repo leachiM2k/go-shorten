@@ -53,6 +53,20 @@ func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
 	return ConvertDbItemToEntity(&dbItem), nil
 }
 
+func (m *dbBackend) All(owner string) (*[]*Entity, error) {
+	items, err := models.AllShortsByOwner(owner)
+	if err != nil {
+		return nil, err
+	}
+
+	entities := make([]*Entity, len(items))
+	for i, item := range items {
+		entities[i] = ConvertDbItemToEntity(item)
+	}
+
+	return &entities, nil
+}
+
 func (m *dbBackend) Read(code string) (*Entity, error) {
 	entity, err := models.GetShortByCode(code)
 	if entity == nil || err != nil {

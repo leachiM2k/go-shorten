@@ -31,7 +31,7 @@ func ConfigWithDefaults() *Config {
 	}
 	return &Config{
 		RESTListenPort: defaultPort,
-		DBConnection:   getOr(os.Getenv("DB_CONNECTION"), "postgres://shorten:shorten@localhost:16541/shorten_dev?sslmode=disable"),
+		DBConnection:   getOr(os.Getenv("DATABASE_URL"), "postgres://shorten:shorten@localhost:16541/shorten_dev?sslmode=disable"),
 		StorageBackend: getOr(os.Getenv("STORAGE"), BackendPostgreSQL),
 	}
 }

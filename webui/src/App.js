@@ -6,7 +6,7 @@ import CustomContent from './global/CustomContent';
 import GlobalProvider from './context/GlobalProvider';
 import CustomRightHeader from './global/CustomRightHeader';
 
-const { Header, Content, Sider } = Layout;
+const { Header, Content } = Layout;
 
 const App = () => (
     <Router>

@@ -19,6 +19,20 @@ func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
 	}
 }
 
+func (m *Handler) GetAll(owner string) (*[]*dataservice.Entity, error) {
+	entity, err := m.Backend.All(owner)
+	if err != nil {
+		log.Infof("error during read from backend: %s", err)
+		return nil, err
+	}
+
+	if entity == nil {
+		log.Infof("could not find entities for owner %s", owner)
+	}
+
+	return entity, nil
+}
+
 func (m *Handler) Get(code string) (*dataservice.Entity, error) {
 	entity, err := m.Backend.Read(code)
 	if err != nil {

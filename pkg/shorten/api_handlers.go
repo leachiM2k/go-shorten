@@ -53,6 +53,36 @@ func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
 	}
 }
 
+// GetAllHandler godoc
+// @Summary Get all user shorts
+// @Description Get all shorts for an user
+// @ID read
+// @Accept  json
+// @Produce  json
+// @Param code path string true "short code"
+// @Success 200 {array} [dataservice.Entity]
+// @Failure 500 {string} string "fail"
+// @Router /shorten [get]
+func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {
+	if m.Handler == nil {
+		ctx.AbortWithError(http.StatusInternalServerError, errors.New("cannot create handler"))
+		return
+	}
+
+	entities, err := m.Handler.GetAll("")
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if entities == nil {
+		ctx.AbortWithError(http.StatusNotFound, errors.New("code not found"))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, entities)
+}
+
 // GetHandler godoc
 // @Summary Get short's info
 // @Description Get all stored information for a specified short

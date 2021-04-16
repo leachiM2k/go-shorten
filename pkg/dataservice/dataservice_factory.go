@@ -10,6 +10,7 @@ type Backend interface {
 	Read(code string) (*Entity, error)
 	Update(entity *Entity) (*Entity, error)
 	Delete(code string) error
+	All(owner string) (*[]*Entity, error)
 }
 
 var backendMap = map[string]Backend{

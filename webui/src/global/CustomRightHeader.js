@@ -7,7 +7,7 @@ const clientId = '***REMOVED***';
 
 export default function CustomRightHeader() {
     const { state, setUser, setLoggedIn } = useContext(GlobalContext);
-    const { loggedIn, user } = state;
+    const { loggedIn } = state;
 
     const handleLogin = user => {
         setUser(user);
@@ -16,10 +16,7 @@ export default function CustomRightHeader() {
 
     if (loggedIn) {
         return (
-            <div style={{ color: 'white', display: 'inline-flex' }}>
-                <div>Logged in as: {user.name}</div>
-                <Logout clientId={clientId}/>
-            </div>
+            <Logout clientId={clientId}/>
         );
 
     } else {

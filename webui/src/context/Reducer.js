@@ -6,7 +6,8 @@ export const ReducerActions = {
     setGithubOrgsLoading: 'SET_GITHUB_ORGS_LOADING',
     setGithubOrgCurrent: 'SET_GITHUB_ORG_CURRENT',
     setLoggedIn: 'SET_LOGGEDIN',
-}
+    setLoading: 'SET_LOADING',
+};
 
 const Reducer = (state, action) => {
     switch (action.type) {
@@ -19,6 +20,11 @@ const Reducer = (state, action) => {
             return {
                 ...state,
                 loggedIn: action.payload
+            };
+        case ReducerActions.setLoading:
+            return {
+                ...state,
+                loading: action.payload
             };
         case ReducerActions.setTeams:
             return {
