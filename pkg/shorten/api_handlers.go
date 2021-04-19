@@ -56,11 +56,11 @@ func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
 // GetAllHandler godoc
 // @Summary Get all user shorts
 // @Description Get all shorts for an user
-// @ID read
+// @ID readAll
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Success 200 {array} [dataservice.Entity]
+// @Success 200 {array} dataservice.Entity
 // @Failure 500 {string} string "fail"
 // @Router /shorten [get]
 func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {

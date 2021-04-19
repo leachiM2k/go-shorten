@@ -76,6 +76,32 @@ info:
   title: Go Shorten API
   version: "1.0"
 paths:
+  /shorten:
+    get:
+      consumes:
+      - application/json
+      description: Get all shorts for an user
+      operationId: readAll
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dataservice.Entity'
+            type: array
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Get all user shorts
   /shorten/:
     post:
       consumes:

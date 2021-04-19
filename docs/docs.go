@@ -33,6 +33,45 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/shorten": {
+            "get": {
+                "description": "Get all shorts for an user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all user shorts",
+                "operationId": "readAll",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dataservice.Entity"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/shorten/": {
             "post": {
                 "description": "Create a new short. Create random code if not specified.",
