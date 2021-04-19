@@ -146,7 +146,7 @@ func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
 			"startTime = $5 "+
 			"expiresAt = $6, "+
 			"attributes = $7 "+
-			"WHERE code = $8",
+			"WHERE code = $8 AND owner = $9",
 		item.Link,
 		item.Description,
 		item.MaxCount,
@@ -154,7 +154,8 @@ func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
 		item.StartTime,
 		item.ExpiresAt,
 		item.Attributes,
-		item.Code)
+		item.Code,
+		item.Owner)
 
 	if err != nil {
 		return nil, err
@@ -163,8 +164,8 @@ func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
 	return item, nil
 }
 
-func DeleteShortByCode(code string) error {
-	_, err := db.Exec("DELETE FROM shortener WHERE code = $1", code)
+func DeleteShortByCode(owner string, code string) error {
+	_, err := db.Exec("DELETE FROM shortener WHERE owner = $1 AND code = $2", owner, code)
 	if err != nil {
 		return err
 	}

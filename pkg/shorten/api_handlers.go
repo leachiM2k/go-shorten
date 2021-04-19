@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
+	"github.com/leachim2k/go-shorten/pkg/server/middleware"
 	"log"
 	"net/http"
 	"sync"
@@ -69,7 +70,9 @@ func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {
 		return
 	}
 
-	entities, err := m.Handler.GetAll("")
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+
+	entities, err := m.Handler.GetAll(jwtClaim.Subject)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -175,6 +178,9 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 		return
 	}
 
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	createRequest.Owner = &jwtClaim.Subject
+
 	if createRequest.Owner == nil || createRequest.Link == nil {
 		ctx.AbortWithError(http.StatusBadRequest, errors.New("mandatory parameters missing (owner, link)"))
 		return
@@ -212,6 +218,14 @@ func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 		return
 	}
 
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	updateRequest.Owner = &jwtClaim.Subject
+
+	if updateRequest.Owner == nil {
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("mandatory parameters missing (owner)"))
+		return
+	}
+
 	code := ctx.Param("code")
 
 	entity, err := m.Handler.Update(code, updateRequest)
@@ -237,9 +251,11 @@ func (m *ApiHandler) DeleteHandler(ctx *gin.Context) {
 		return
 	}
 
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+
 	code := ctx.Param("code")
 
-	err := m.Handler.Delete(code)
+	err := m.Handler.Delete(jwtClaim.Subject, code)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return

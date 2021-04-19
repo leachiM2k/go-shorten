@@ -61,7 +61,7 @@ func (m *backend) Update(entity *Entity) (*Entity, error) {
 	return entity, nil
 }
 
-func (m *backend) Delete(code string) error {
+func (m *backend) Delete(owner string, code string) error {
 	m.mutex.Lock()
 	delete(m.entityCache, code)
 	m.mutex.Unlock()

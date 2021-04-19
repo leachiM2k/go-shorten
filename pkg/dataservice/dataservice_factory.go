@@ -9,7 +9,7 @@ type Backend interface {
 	Create(request CreateRequest) (*Entity, error)
 	Read(code string) (*Entity, error)
 	Update(entity *Entity) (*Entity, error)
-	Delete(code string) error
+	Delete(owner string, code string) error
 	All(owner string) (*[]*Entity, error)
 }
 

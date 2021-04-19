@@ -18,7 +18,7 @@ create table if not exists shortener
     id bigserial not null
         constraint shortener_pk
             primary key,
-    "owner" varchar(20) not null,
+    "owner" varchar(30) not null,
     "code" varchar(100) not null,
     "link" varchar(100) not null,
     "description" varchar(250) not null,

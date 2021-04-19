@@ -310,6 +310,9 @@
                 "maxCount": {
                     "type": "integer"
                 },
+                "owner": {
+                    "type": "string"
+                },
                 "startTime": {
                     "type": "string"
                 }

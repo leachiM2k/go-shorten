@@ -28,6 +28,7 @@ type CreateRequest struct {
 }
 
 type UpdateRequest struct {
+	Owner       *string                `json:"owner"`
 	Link        string                 `json:"link"`
 	Description string                 `json:"description,omitempty"`
 	MaxCount    int                    `json:"maxCount,omitempty"`

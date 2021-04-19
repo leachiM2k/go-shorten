@@ -34,16 +34,17 @@ func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 
 func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
 	dbItem := models.ShortenerItem{
-		Link:       *request.Link,
-		Owner:      *request.Owner,
-		Code:       request.Code,
-		Count:      0,
-		MaxCount:   0,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
-		StartTime:  request.StartTime,
-		ExpiresAt:  request.ExpiresAt,
-		Attributes: (*models.Attributes)(request.Attributes),
+		Link:        *request.Link,
+		Owner:       *request.Owner,
+		Code:        request.Code,
+		Description: request.Description,
+		Count:       0,
+		MaxCount:    0,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+		StartTime:   request.StartTime,
+		ExpiresAt:   request.ExpiresAt,
+		Attributes:  (*models.Attributes)(request.Attributes),
 	}
 	err := models.AddShort(dbItem)
 	if err != nil {
@@ -93,8 +94,8 @@ func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
 	return nil, nil
 }
 
-func (m *dbBackend) Delete(code string) error {
-	err := models.DeleteShortByCode(code)
+func (m *dbBackend) Delete(owner string, code string) error {
+	err := models.DeleteShortByCode(owner, code)
 	if err != nil {
 		return err
 	}

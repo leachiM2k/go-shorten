@@ -81,8 +81,8 @@ func (m *Handler) Add(request dataservice.CreateRequest) (*dataservice.Entity, e
 	return entity, nil
 }
 
-func (m *Handler) Delete(code string) error {
-	return m.Backend.Delete(code)
+func (m *Handler) Delete(owner string, code string) error {
+	return m.Backend.Delete(owner, code)
 }
 
 func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*dataservice.Entity, error) {

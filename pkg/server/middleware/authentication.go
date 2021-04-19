@@ -15,7 +15,6 @@ import (
 
 // GoogleClaims -
 type GoogleClaims struct {
-	ID            string `json:"sub"`
 	Email         string `json:"email"`
 	EmailVerified bool   `json:"email_verified"`
 	FirstName     string `json:"given_name"`
@@ -69,7 +68,6 @@ func JWTAuthenticator(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("claims: %#v", claims)
 	c.Set("JWT_CLAIMS", claims)
 
 	return
