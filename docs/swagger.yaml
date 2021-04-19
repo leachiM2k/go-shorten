@@ -165,7 +165,8 @@ paths:
     put:
       consumes:
       - application/json
-      description: Updates several fields of a short, while maintaining count, owner and creation date
+      description: Updates several fields of a short, while maintaining count, owner
+        and creation date
       operationId: update
       parameters:
       - description: short code
@@ -191,7 +192,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Return the right link for short code or "not found" if expired, not started or max count was reached
+      description: Return the right link for short code or "not found" if expired,
+        not started or max count was reached
       operationId: handle
       parameters:
       - description: short code
