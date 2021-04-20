@@ -1,0 +1,8 @@
+.mobile-fullscreen-drawer .ant-drawer-content-wrapper {
+    width: 720px;
+}
+@media only screen and (max-width: 720px) {
+    .mobile-fullscreen-drawer .ant-drawer-content-wrapper {
+        width: 100%;
+    }
+}
