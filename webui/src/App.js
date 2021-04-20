@@ -20,22 +20,11 @@ const App = () => (
                         </Col>
                     </Row>
                 </Header>
-                <Layout>
-                    <Layout style={{ padding: '24px' }}>
-                        <Content
-                            className="site-layout-background"
-                            style={{
-                                padding: 24,
-                                margin: 0,
-                                minHeight: 280,
-                            }}
-                        >
-                            <Alert.ErrorBoundary>
-                                <CustomContent/>
-                            </Alert.ErrorBoundary>
-                        </Content>
-                    </Layout>
-                </Layout>
+                <Content className="site-layout-background">
+                    <Alert.ErrorBoundary>
+                        <CustomContent/>
+                    </Alert.ErrorBoundary>
+                </Content>
             </Layout>
         </GlobalProvider>
     </Router>

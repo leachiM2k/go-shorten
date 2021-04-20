@@ -4,7 +4,7 @@ import {lazy} from 'react';
 const StartPage = lazy(() => import('../pages/StartPage'));
 
 const routes = [
-    { path: '/', component: StartPage },
+    { path: '/', exact: true, component: StartPage },
     { path: '*', component: NotFound },
 ];
 

@@ -1,14 +1,15 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import {GlobalContext} from '../context/GlobalProvider';
-import {Button, Col, Form, List, message, Row, Typography} from 'antd';
+import {Button, Col, List, message, Popconfirm, Row, Typography} from 'antd';
 import client from '../lib/client-fetch';
-import ShortForm from '../components/ShortForm';
+import {PlusOutlined} from '@ant-design/icons';
+import DrawerForm from '../components/DrawerForm';
 
 export default function StartPage(props) {
     const { state: { loggedIn, user } } = useContext(GlobalContext);
+    const [drawerMode, setDrawerMode] = useState(null);
     const [formSaving, setFormSaving] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [form] = Form.useForm();
     const [allShorts, setAllShorts] = useState(null);
     const [editValues, setEditValues] = useState(null);
 
@@ -43,12 +44,18 @@ export default function StartPage(props) {
     const save = async (values) => {
         setFormSaving(true);
         try {
-            await client.post('/api/shorten/', values, {
+            const options = {
                 headers: {
                     'Authorization': 'Bearer ' + user.token,
                 }
-            });
+            }
+            if (values.createdAt) {
+                await client.put('/api/shorten/' + values.code, values, options);
+            } else {
+                await client.post('/api/shorten/', values, options);
+            }
             message.success(`information persisted`);
+            setDrawerMode(null);
             await fetchData();
         } catch (error) {
             message.error('Request failed: ' + error.message, 15);
@@ -78,7 +85,7 @@ export default function StartPage(props) {
                 }
             });
             setEditValues(result.data);
-            form.resetFields();
+            setDrawerMode('edit');
         } catch (error) {
             if (error.status === 404) {
                 setEditValues({});
@@ -88,45 +95,64 @@ export default function StartPage(props) {
         }
     }
 
-    const handleSubmit = () => {
-        form
-            .validateFields()
-            .catch(info => {
-                console.log('Validate Failed:', info);
-            })
-            .then(values => save(values));
-    }
+    const showDrawer = () => {
+        setDrawerMode('create');
+    };
+
+    const onCloseDrawer = () => {
+        setEditValues(null);
+        setDrawerMode(null);
+    };
 
     if (loggedIn) {
         return (
-            <div>
-                <Row gutter={10}>
-                    <Col span={12}>
-                        {allShorts && <List
-                            loading={loading}
-                            itemLayout="horizontal"
-                            dataSource={allShorts}
-                            renderItem={item => (
-                                <List.Item actions={[
-                                    <Button danger size="small" onClick={handleDelete(item.code)}>Delete</Button>,
-                                    <Button size="small" onClick={handleEdit(item.code)}>Edit</Button>,
-                                ]}>
-                                    {item.createdAt}
-                                    <br/>
-                                    <Typography.Text>{item.description || item.link}</Typography.Text>
-                                    <br/>
-                                    <Typography.Link
-                                        href={"https://shortener/" + item.code}>https://shortener/{item.code}</Typography.Link>
-                                </List.Item>
-                            )}
-                        />}
-                    </Col>
-                    <Col span={12}>
-                        <ShortForm form={form} initialValues={editValues} onFinish={handleSubmit} loading={formSaving}/>
-                    </Col>
-                </Row>
+            <Row>
+                <Col offset={6} span={12}>
+                    <div style={{ textAlign: 'right', margin: '1em 0' }}>
+                        <Button type="primary" onClick={showDrawer}>
+                            <PlusOutlined/> Create
+                        </Button>
+                    </div>
 
-            </div>
+                    {drawerMode !== null &&
+                    <DrawerForm title={drawerMode === "create" ? "Create a new short" : "Update a short"}
+                                actionText={drawerMode === "create" ? "Shorten!" : "Update"}
+                                onSave={save}
+                                onClose={onCloseDrawer}
+                                loading={formSaving}
+                                initialValues={editValues}
+                                visible={true}/>}
+
+                    {allShorts && <List
+                        loading={loading}
+                        itemLayout="horizontal"
+                        dataSource={allShorts}
+                        renderItem={item => (
+                            <List.Item actions={[
+                                <Popconfirm title="Are you sure？" okText="Yes" cancelText="No"
+                                            onConfirm={handleDelete(item.code)}>
+                                    <Button danger size="small">Delete</Button>
+                                </Popconfirm>,
+                                <Button size="small" onClick={handleEdit(item.code)}>Edit</Button>,
+                            ]}>
+                                <Row style={{ flex: '1' }} justify="space-between">
+                                    <Col>
+                                        <Typography.Text>{item.description || item.link}</Typography.Text>
+                                        <br/>
+                                        <Typography.Link
+                                            href={"https://shortener/" + item.code}>https://shortener/{item.code}</Typography.Link>
+                                    </Col>
+                                    <Col>
+                                        {new Date(item.createdAt).toLocaleDateString()}
+                                        <br/>
+                                        {item.count} visits
+                                    </Col>
+                                </Row>
+                            </List.Item>
+                        )}
+                    />}
+                </Col>
+            </Row>
         );
     } else {
         return (

@@ -4,6 +4,8 @@ import (
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/mrcrgl/pflog/log"
+	"math/rand"
+	"strings"
 	"time"
 )
 
@@ -13,6 +15,7 @@ type Handler struct {
 }
 
 func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
+	rand.Seed(time.Now().UnixNano())
 	return &Handler{
 		Clock:   clock,
 		Backend: backend,
@@ -74,6 +77,9 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 }
 
 func (m *Handler) Add(request dataservice.CreateRequest) (*dataservice.Entity, error) {
+	if request.Code == "" {
+		request.Code = GenerateRandomString(8)
+	}
 	entity, err := m.Backend.Create(request)
 	if err != nil {
 		return nil, err
@@ -91,6 +97,7 @@ func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*datas
 		return nil, err
 	}
 
+	entity.Description = request.Description
 	entity.Link = request.Link
 	entity.MaxCount = request.MaxCount
 	entity.StartTime = request.StartTime
@@ -112,4 +119,32 @@ func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*datas
 	}
 
 	return entity, nil
+}
+
+const (
+	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_" // 52 possibilities
+	letterIdxBits = 6                                                                  // 6 bits to represent a letter index
+	letterIdxMask = 1<<letterIdxBits - 1                                               // All 1-bits, as many as letterIdxBits
+	letterIdxMax  = 63 / letterIdxBits                                                 // # of letter indices fitting in 63 bits
+)
+
+var src = rand.NewSource(time.Now().UnixNano())
+
+func GenerateRandomString(n int) string {
+	sb := strings.Builder{}
+	sb.Grow(n)
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+		if remain == 0 {
+			cache, remain = src.Int63(), letterIdxMax
+		}
+		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
+			sb.WriteByte(letterBytes[idx])
+			i--
+		}
+		cache >>= letterIdxBits
+		remain--
+	}
+
+	return sb.String()
 }

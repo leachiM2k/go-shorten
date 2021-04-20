@@ -143,7 +143,7 @@ func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
 			"description = $2, "+
 			"maxCount = $3, "+
 			"updatedAt = $4, "+
-			"startTime = $5 "+
+			"startTime = $5, "+
 			"expiresAt = $6, "+
 			"attributes = $7 "+
 			"WHERE code = $8 AND owner = $9",

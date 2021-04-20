@@ -129,31 +129,37 @@ func (m *ApiHandler) GetHandler(ctx *gin.Context) {
 // @Failure 500 {string} string "fail"
 // @Router /shorten/handle/{code} [get]
 func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
-	if m.Handler == nil {
-		ctx.AbortWithError(http.StatusInternalServerError, errors.New("cannot create handler"))
-		return
-	}
-
 	code := ctx.Param("code")
-
-	entity, err := m.Handler.Get(code)
+	link, err := m.HandleCode(code)
 	if err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
+		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	link, err := m.Handler.ConvertEntityToLink(entity)
-	if err != nil {
-		ctx.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-
-	if link == "" {
+	if *link == "" {
 		ctx.AbortWithError(http.StatusNotFound, errors.New("code not found"))
 		return
 	}
 
-	ctx.Redirect(http.StatusFound, link)
+	ctx.Redirect(http.StatusFound, *link)
+}
+
+func (m *ApiHandler) HandleCode(code string) (*string, error) {
+	if m.Handler == nil {
+		return nil, errors.New("cannot create handler")
+	}
+
+	entity, err := m.Handler.Get(code)
+	if err != nil {
+		return nil, err
+	}
+
+	link, err := m.Handler.ConvertEntityToLink(entity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &link, nil
 }
 
 // AddHandler godoc

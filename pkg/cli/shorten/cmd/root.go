@@ -59,9 +59,7 @@ func NewRootCommand() *cobra.Command {
 			})
 			r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-			r.NoRoute(func(c *gin.Context) {
-				c.FileFromFS(c.Request.URL.Path, shortenServer.AssetFile())
-			})
+			r.NoRoute(shortenServer.NoRoute)
 
 			err = endless.ListenAndServe(":"+strconv.Itoa(options.Current.RESTListenPort), r)
 			if err != nil {

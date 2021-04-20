@@ -19,16 +19,17 @@ func NewDBBackend() Backend {
 
 func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 	return &Entity{
-		Owner:      dbItem.Owner,
-		Link:       dbItem.Link,
-		Code:       dbItem.Code,
-		Count:      dbItem.Count,
-		MaxCount:   dbItem.MaxCount,
-		CreatedAt:  dbItem.CreatedAt,
-		UpdatedAt:  dbItem.UpdatedAt,
-		StartTime:  dbItem.StartTime,
-		ExpiresAt:  dbItem.ExpiresAt,
-		Attributes: (*map[string]interface{})(dbItem.Attributes),
+		Owner:       dbItem.Owner,
+		Link:        dbItem.Link,
+		Code:        dbItem.Code,
+		Description: dbItem.Description,
+		Count:       dbItem.Count,
+		MaxCount:    dbItem.MaxCount,
+		CreatedAt:   dbItem.CreatedAt,
+		UpdatedAt:   dbItem.UpdatedAt,
+		StartTime:   dbItem.StartTime,
+		ExpiresAt:   dbItem.ExpiresAt,
+		Attributes:  (*map[string]interface{})(dbItem.Attributes),
 	}
 }
 
@@ -79,12 +80,14 @@ func (m *dbBackend) Read(code string) (*Entity, error) {
 
 func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
 	dbEntity := models.ShortenerItem{
-		Code:       entity.Code,
-		Link:       entity.Link,
-		MaxCount:   entity.MaxCount,
-		StartTime:  entity.StartTime,
-		ExpiresAt:  entity.ExpiresAt,
-		Attributes: (*models.Attributes)(entity.Attributes),
+		Owner:       entity.Owner,
+		Code:        entity.Code,
+		Link:        entity.Link,
+		Description: entity.Description,
+		MaxCount:    entity.MaxCount,
+		StartTime:   entity.StartTime,
+		ExpiresAt:   entity.ExpiresAt,
+		Attributes:  (*models.Attributes)(entity.Attributes),
 	}
 	_, err := models.UpdateShort(&dbEntity)
 	if err != nil {
