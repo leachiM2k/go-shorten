@@ -27,7 +27,7 @@ push-container: check-image container
 	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
 	docker push $(IMAGE):$(TAG)
 	echo "$(HEROKU_DOCKER_PASSWORD)" | docker login -u "$(HEROKU_DOCKER_USERNAME)" --password-stdin registry.heroku.com
-	docker tag $(TAG) registry.heroku.com/$(IMAGE)/web
+	docker tag $(IMAGE):$(TAG) registry.heroku.com/$(IMAGE)/web
 	docker push registry.heroku.com/$(IMAGE)/web
 else
 push-container:
