@@ -8,4 +8,4 @@ ENV GIN_MODE=release
 
 ADD ./dist/linux/amd64/* /
 
-CMD ["/go-shorten"]
+CMD ["/shorten"]
