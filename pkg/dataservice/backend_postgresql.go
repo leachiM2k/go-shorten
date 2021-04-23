@@ -108,6 +108,7 @@ func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
 		Code:        entity.Code,
 		Link:        entity.Link,
 		Description: entity.Description,
+		Count:       entity.Count,
 		MaxCount:    entity.MaxCount,
 		StartTime:   entity.StartTime,
 		ExpiresAt:   entity.ExpiresAt,

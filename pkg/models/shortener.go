@@ -5,8 +5,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+	"fmt"
 	_ "github.com/lib/pq"
 	e "github.com/pkg/errors"
+	"strings"
 	"time"
 )
 
@@ -142,25 +144,35 @@ func GetShortByCode(code string) (*ShortenerItem, error) {
 }
 
 func UpdateShort(item *ShortenerItem) (*ShortenerItem, error) {
-	_, err := db.Exec(
-		"UPDATE "+shortenerTableName+" SET "+
-			"link = $1, "+
-			"description = $2, "+
-			"maxCount = $3, "+
-			"updatedAt = $4, "+
-			"startTime = $5, "+
-			"expiresAt = $6, "+
-			"attributes = $7 "+
-			"WHERE code = $8 AND owner = $9",
-		item.Link,
-		item.Description,
-		item.MaxCount,
-		time.Now(),
-		item.StartTime,
-		item.ExpiresAt,
-		item.Attributes,
-		item.Code,
-		item.Owner)
+	fields := make(map[string]interface{})
+	fields["link"] = item.Link
+	fields["description"] = item.Description
+	fields["maxCount"] = item.MaxCount
+	fields["updatedAt"] = time.Now()
+	fields["startTime"] = item.StartTime
+	fields["expiresAt"] = item.ExpiresAt
+	fields["attributes"] = item.Attributes
+	if item.Count > 0 {
+		fields["count"] = item.Count
+	}
+
+	var values []interface{}
+	var argumentsAndPlaceholders []string
+	count := 1
+	for k, v := range fields {
+		values = append(values, v)
+		argumentsAndPlaceholders = append(argumentsAndPlaceholders, fmt.Sprintf("%s = $%d", k, count))
+		count++
+	}
+
+	query := fmt.Sprintf("UPDATE "+shortenerTableName+" SET "+
+		strings.Join(argumentsAndPlaceholders, ", ")+
+		" WHERE code = $%d AND owner = $%d", count, count+1)
+
+	values = append(values, item.Code)
+	values = append(values, item.Owner)
+
+	_, err := db.Exec(query, values...)
 
 	if err != nil {
 		return nil, err
