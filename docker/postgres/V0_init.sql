@@ -20,7 +20,7 @@ create table if not exists shortener
             primary key,
     "owner" varchar(30) not null,
     "code" varchar(100) not null,
-    "link" varchar(100) not null,
+    "link" varchar(1024) not null,
     "description" varchar(250) not null,
     "count" integer,
     "maxcount" integer,
@@ -34,4 +34,20 @@ CREATE INDEX idx_shortener_attributes ON shortener USING gin (attributes);
 CREATE UNIQUE INDEX shortener_code_uindex ON shortener (code);
 alter table shortener owner to shorten;
 
+create table shortstat
+(
+    id bigserial not null
+        constraint shortstat_pk
+            primary key,
+    "shortenerid" bigint not null
+        constraint shortstat_shortener__fk
+            references shortener
+            on delete cascade,
+    "clientip" varchar(15) not null,
+    "useragent" varchar(200) not null,
+    referer varchar(200) not null,
+    createdat timestamp not null
+);
+
+alter table shortstat owner to shorten;
 

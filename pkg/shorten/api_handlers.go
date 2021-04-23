@@ -6,7 +6,7 @@ import (
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/leachim2k/go-shorten/pkg/server/middleware"
-	"log"
+	"github.com/mrcrgl/pflog/log"
 	"net/http"
 	"sync"
 )
@@ -130,7 +130,7 @@ func (m *ApiHandler) GetHandler(ctx *gin.Context) {
 // @Router /shorten/handle/{code} [get]
 func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
 	code := ctx.Param("code")
-	link, err := m.HandleCode(code)
+	link, err := m.HandleCode(code, ctx.ClientIP(), ctx.Request.UserAgent(), ctx.Request.Referer())
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
@@ -144,7 +144,7 @@ func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
 	ctx.Redirect(http.StatusFound, *link)
 }
 
-func (m *ApiHandler) HandleCode(code string) (*string, error) {
+func (m *ApiHandler) HandleCode(code string, clientIp string, userAgent string, referer string) (*string, error) {
 	if m.Handler == nil {
 		return nil, errors.New("cannot create handler")
 	}
@@ -153,6 +153,13 @@ func (m *ApiHandler) HandleCode(code string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	go func() {
+		_, errStat := m.Handler.AddStat(entity.ID, clientIp, userAgent, referer)
+		if errStat != nil {
+			log.Warningf("Could not write stats: %s", err)
+		}
+	}()
 
 	link, err := m.Handler.ConvertEntityToLink(entity)
 	if err != nil {

@@ -68,12 +68,23 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 	}
 
 	entity.Count += 1
-	_, err := m.Backend.Update(entity)
-	if err != nil {
-		log.Warningf("Could not update short count: %s", err)
-	}
+
+	go func(updateEntity *dataservice.Entity) {
+		_, err := m.Backend.Update(updateEntity)
+		if err != nil {
+			log.Warningf("Could not update short count: %s", err)
+		}
+	}(entity)
 
 	return entity.Link, nil
+}
+
+func (m *Handler) AddStat(shortenerId int, clientIp string, userAgent string, referer string) (*dataservice.StatEntity, error) {
+	entity, err := m.Backend.CreateStat(shortenerId, clientIp, userAgent, referer)
+	if err != nil {
+		return nil, err
+	}
+	return entity, nil
 }
 
 func (m *Handler) Add(request dataservice.CreateRequest) (*dataservice.Entity, error) {

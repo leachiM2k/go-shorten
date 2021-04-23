@@ -3,6 +3,7 @@ package dataservice
 import "time"
 
 type Entity struct {
+	ID          int                     `json:"-"`
 	Owner       string                  `json:"owner"`
 	Link        string                  `json:"link"`
 	Code        string                  `json:"code"`
@@ -14,6 +15,14 @@ type Entity struct {
 	StartTime   *time.Time              `json:"startTime"`
 	ExpiresAt   *time.Time              `json:"expiresAt"`
 	Attributes  *map[string]interface{} `json:"attributes"`
+}
+
+type StatEntity struct {
+	ShortenerID int       `json:"shortenerID"`
+	ClientIP    string    `json:"clientIP"`
+	UserAgent   string    `json:"userAgent"`
+	Referer     string    `json:"referer"`
+	CreatedAt   time.Time `json:"timestamp"`
 }
 
 type CreateRequest struct {

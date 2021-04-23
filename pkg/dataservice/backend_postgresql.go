@@ -1,6 +1,7 @@
 package dataservice
 
 import (
+	"fmt"
 	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
 	"github.com/leachim2k/go-shorten/pkg/models"
 	logOriginal "log"
@@ -19,6 +20,7 @@ func NewDBBackend() Backend {
 
 func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 	return &Entity{
+		ID:          dbItem.ID,
 		Owner:       dbItem.Owner,
 		Link:        dbItem.Link,
 		Code:        dbItem.Code,
@@ -31,6 +33,28 @@ func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 		ExpiresAt:   dbItem.ExpiresAt,
 		Attributes:  (*map[string]interface{})(dbItem.Attributes),
 	}
+}
+
+func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
+	dbItem := models.ShortStatItem{
+		ShortenerID: shortenerId,
+		ClientIP:    clientIp,
+		UserAgent:   userAgent,
+		Referer:     referer,
+		CreatedAt:   time.Now(),
+	}
+	err := models.AddShortStat(dbItem)
+	if err != nil {
+		fmt.Printf("Err: %#v", err)
+		return nil, err
+	}
+	return &StatEntity{
+		ShortenerID: dbItem.ShortenerID,
+		ClientIP:    dbItem.ClientIP,
+		UserAgent:   dbItem.UserAgent,
+		Referer:     dbItem.Referer,
+		CreatedAt:   dbItem.CreatedAt,
+	}, nil
 }
 
 func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
@@ -47,12 +71,12 @@ func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
 		ExpiresAt:   request.ExpiresAt,
 		Attributes:  (*models.Attributes)(request.Attributes),
 	}
-	err := models.AddShort(dbItem)
+	dbResult, err := models.AddShort(dbItem)
 	if err != nil {
 		return nil, err
 	}
 
-	return ConvertDbItemToEntity(&dbItem), nil
+	return ConvertDbItemToEntity(dbResult), nil
 }
 
 func (m *dbBackend) All(owner string) (*[]*Entity, error) {

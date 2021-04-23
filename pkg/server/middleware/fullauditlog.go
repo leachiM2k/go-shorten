@@ -29,7 +29,7 @@ func FullAuditLog(next http.Handler) http.Handler {
 				Route:     r.RequestURI,
 				Method:    r.Method,
 				Payload:   bodyBytes,
-				Timestamp: time.Time{},
+				CreatedAt: time.Time{},
 			}
 			_ = models.PersistLog(logItem)
 		*/

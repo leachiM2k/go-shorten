@@ -9,23 +9,23 @@ import (
 	"strings"
 )
 
-func NoRoute(c *gin.Context) {
-	path := strings.TrimLeft(c.Request.URL.Path, "/")
+func NoRoute(ctx *gin.Context) {
+	path := strings.TrimLeft(ctx.Request.URL.Path, "/")
 	if path == "" {
 		path = "index.html"
 	}
 	_, err := AssetInfo(path)
 	fmt.Printf("err: %#v", err)
 	if err == nil {
-		c.FileFromFS(c.Request.URL.Path, AssetFile())
+		ctx.FileFromFS(ctx.Request.URL.Path, AssetFile())
 		return
 	}
 
 	apiRouting := shorten.NewApiHandler()
-	link, err := apiRouting.HandleCode(path)
+	link, err := apiRouting.HandleCode(path, ctx.ClientIP(), ctx.Request.UserAgent(), ctx.Request.Referer())
 	fmt.Printf("err: %#v", err)
 	if link != nil && *link != "" {
-		c.Redirect(http.StatusFound, *link)
+		ctx.Redirect(http.StatusFound, *link)
 		return
 	}
 }

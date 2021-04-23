@@ -1,6 +1,7 @@
 package dataservice
 
 import (
+	"math/rand"
 	"sync"
 	"time"
 )
@@ -8,6 +9,7 @@ import (
 type backend struct {
 	mutex       sync.RWMutex
 	entityCache map[string]Entity
+	statCache   map[int]StatEntity
 }
 
 func (m *backend) All(owner string) (*[]*Entity, error) {
@@ -16,13 +18,16 @@ func (m *backend) All(owner string) (*[]*Entity, error) {
 }
 
 func NewInmemoryBackend() Backend {
+	rand.Seed(time.Now().UnixNano())
 	return &backend{
 		entityCache: map[string]Entity{},
+		statCache:   map[int]StatEntity{},
 	}
 }
 
 func (m *backend) Create(request CreateRequest) (*Entity, error) {
 	entity := Entity{
+		ID:         rand.Int(),
 		Owner:      *request.Owner,
 		Link:       *request.Link,
 		Code:       request.Code,
@@ -36,6 +41,21 @@ func (m *backend) Create(request CreateRequest) (*Entity, error) {
 	}
 	m.mutex.Lock()
 	m.entityCache[request.Code] = entity
+	m.mutex.Unlock()
+
+	return &entity, nil
+}
+
+func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
+	entity := StatEntity{
+		ShortenerID: shortenerId,
+		ClientIP:    clientIp,
+		UserAgent:   userAgent,
+		Referer:     referer,
+		CreatedAt:   time.Now(),
+	}
+	m.mutex.Lock()
+	m.statCache[shortenerId] = entity
 	m.mutex.Unlock()
 
 	return &entity, nil

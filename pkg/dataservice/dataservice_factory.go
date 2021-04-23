@@ -7,6 +7,7 @@ import (
 
 type Backend interface {
 	Create(request CreateRequest) (*Entity, error)
+	CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error)
 	Read(code string) (*Entity, error)
 	Update(entity *Entity) (*Entity, error)
 	Delete(owner string, code string) error
