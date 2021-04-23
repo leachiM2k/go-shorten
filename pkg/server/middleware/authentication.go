@@ -86,7 +86,6 @@ func ValidateGoogleJWT(tokenString string) (GoogleClaims, error) {
 			}
 			key, err := jwt.ParseRSAPublicKeyFromPEM([]byte(pem))
 			if err != nil {
-				fmt.Printf("-- 2 -- \n")
 				return nil, err
 			}
 			return key, nil

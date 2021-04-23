@@ -150,7 +150,7 @@ func (m *ApiHandler) HandleCode(code string, clientIp string, userAgent string, 
 	}
 
 	entity, err := m.Handler.Get(code)
-	if err != nil {
+	if entity == nil || err != nil {
 		return nil, err
 	}
 

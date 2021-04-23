@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	serverMiddleware "github.com/leachim2k/go-shorten/pkg/server/middleware"
 	"github.com/leachim2k/go-shorten/pkg/shorten"
@@ -15,7 +14,6 @@ func NoRoute(ctx *gin.Context) {
 		path = "index.html"
 	}
 	_, err := AssetInfo(path)
-	fmt.Printf("err: %#v", err)
 	if err == nil {
 		ctx.FileFromFS(ctx.Request.URL.Path, AssetFile())
 		return
@@ -23,11 +21,13 @@ func NoRoute(ctx *gin.Context) {
 
 	apiRouting := shorten.NewApiHandler()
 	link, err := apiRouting.HandleCode(path, ctx.ClientIP(), ctx.Request.UserAgent(), ctx.Request.Referer())
-	fmt.Printf("err: %#v", err)
 	if link != nil && *link != "" {
 		ctx.Redirect(http.StatusFound, *link)
 		return
 	}
+
+	// this is needed because of SPA's self-routing
+	ctx.FileFromFS("/", AssetFile())
 }
 
 func NewGroup(r *gin.Engine) {

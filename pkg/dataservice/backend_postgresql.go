@@ -1,9 +1,9 @@
 package dataservice
 
 import (
-	"fmt"
 	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
 	"github.com/leachim2k/go-shorten/pkg/models"
+	"github.com/mrcrgl/pflog/log"
 	logOriginal "log"
 	"os"
 	"time"
@@ -45,7 +45,7 @@ func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent strin
 	}
 	err := models.AddShortStat(dbItem)
 	if err != nil {
-		fmt.Printf("Err: %#v", err)
+		log.Infof("create stat failed with error: %#v", err)
 		return nil, err
 	}
 	return &StatEntity{
