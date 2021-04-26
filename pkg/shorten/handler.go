@@ -5,7 +5,6 @@ import (
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/mrcrgl/pflog/log"
 	"math/rand"
-	"strings"
 	"time"
 )
 
@@ -23,17 +22,17 @@ func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
 }
 
 func (m *Handler) GetAll(owner string) (*[]*dataservice.Entity, error) {
-	entity, err := m.Backend.All(owner)
+	entities, err := m.Backend.All(owner)
 	if err != nil {
 		log.Infof("error during read from backend: %s", err)
 		return nil, err
 	}
 
-	if entity == nil {
+	if entities == nil {
 		log.Infof("could not find entities for owner %s", owner)
 	}
 
-	return entity, nil
+	return entities, nil
 }
 
 func (m *Handler) Get(code string) (*dataservice.Entity, error) {
@@ -132,30 +131,16 @@ func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*datas
 	return entity, nil
 }
 
-const (
-	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_" // 52 possibilities
-	letterIdxBits = 6                                                                  // 6 bits to represent a letter index
-	letterIdxMask = 1<<letterIdxBits - 1                                               // All 1-bits, as many as letterIdxBits
-	letterIdxMax  = 63 / letterIdxBits                                                 // # of letter indices fitting in 63 bits
-)
-
-var src = rand.NewSource(time.Now().UnixNano())
-
-func GenerateRandomString(n int) string {
-	sb := strings.Builder{}
-	sb.Grow(n)
-	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
-	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
-		if remain == 0 {
-			cache, remain = src.Int63(), letterIdxMax
-		}
-		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
-			sb.WriteByte(letterBytes[idx])
-			i--
-		}
-		cache >>= letterIdxBits
-		remain--
+func (m *Handler) GetStats(code string) (*[]*dataservice.StatEntity, error) {
+	entities, err := m.Backend.AllStats(code)
+	if err != nil {
+		log.Infof("error during read stats from backend: %s", err)
+		return nil, err
 	}
 
-	return sb.String()
+	if entities == nil {
+		log.Infof("could not find stats for code %s", code)
+	}
+
+	return entities, nil
 }

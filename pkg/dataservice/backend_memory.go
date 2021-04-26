@@ -9,7 +9,7 @@ import (
 type backend struct {
 	mutex       sync.RWMutex
 	entityCache map[string]Entity
-	statCache   map[int]StatEntity
+	statCache   map[int][]*StatEntity
 }
 
 func (m *backend) All(owner string) (*[]*Entity, error) {
@@ -21,7 +21,7 @@ func NewInmemoryBackend() Backend {
 	rand.Seed(time.Now().UnixNano())
 	return &backend{
 		entityCache: map[string]Entity{},
-		statCache:   map[int]StatEntity{},
+		statCache:   map[int][]*StatEntity{},
 	}
 }
 
@@ -55,10 +55,31 @@ func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string,
 		CreatedAt:   time.Now(),
 	}
 	m.mutex.Lock()
-	m.statCache[shortenerId] = entity
+	stats, ok := m.statCache[shortenerId]
+	if !ok {
+		stats = make([]*StatEntity, 0)
+	}
+	m.statCache[shortenerId] = append(stats, &entity)
 	m.mutex.Unlock()
 
 	return &entity, nil
+}
+
+func (m *backend) AllStats(code string) (*[]*StatEntity, error) {
+	entity, err := m.Read(code)
+	if err != nil {
+		return nil, err
+	}
+
+	m.mutex.RLock()
+	stats, ok := m.statCache[entity.ID]
+	m.mutex.RUnlock()
+
+	if !ok {
+		return nil, nil
+	}
+
+	return &stats, nil
 }
 
 func (m *backend) Read(code string) (*Entity, error) {

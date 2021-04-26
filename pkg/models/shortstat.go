@@ -33,24 +33,23 @@ func AddShortStat(item ShortStatItem) error {
 	return nil
 }
 
-func GetShortStats(shortenerId int) ([]*ShortStatItem, error) {
+func AllShortStats(code string) ([]*ShortStatItem, error) {
 	rows, err := db.Query(
-		"SELECT "+
-			"id, shortenerid, clientip, useragent, referer, createdat "+
-			"FROM "+shortstatTableName+" "+
-			"WHERE id = $1",
-		shortenerId)
+		"SELECT"+
+			" stat.clientip, stat.useragent, stat.referer, stat.createdat"+
+			" FROM "+shortstatTableName+" stat"+
+			" LEFT JOIN "+shortenerTableName+" s ON s.id = stat.shortenerid"+
+			" WHERE s.code = $1",
+		code)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	stats := make([]*ShortStatItem, 0)
+	statItems := make([]*ShortStatItem, 0)
 	for rows.Next() {
 		item := new(ShortStatItem)
 		err := rows.Scan(
-			&item.ID,
-			&item.ShortenerID,
 			&item.ClientIP,
 			&item.UserAgent,
 			&item.Referer,
@@ -58,10 +57,10 @@ func GetShortStats(shortenerId int) ([]*ShortStatItem, error) {
 		if err != nil {
 			return nil, err
 		}
-		stats = append(stats, item)
+		statItems = append(statItems, item)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return stats, nil
+	return statItems, nil
 }

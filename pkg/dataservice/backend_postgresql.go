@@ -35,6 +35,15 @@ func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 	}
 }
 
+func ConvertStatDbItemToEntity(dbItem *models.ShortStatItem) *StatEntity {
+	return &StatEntity{
+		ClientIP:  dbItem.ClientIP,
+		UserAgent: dbItem.UserAgent,
+		Referer:   dbItem.Referer,
+		CreatedAt: dbItem.CreatedAt,
+	}
+}
+
 func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
 	dbItem := models.ShortStatItem{
 		ShortenerID: shortenerId,
@@ -88,6 +97,20 @@ func (m *dbBackend) All(owner string) (*[]*Entity, error) {
 	entities := make([]*Entity, len(items))
 	for i, item := range items {
 		entities[i] = ConvertDbItemToEntity(item)
+	}
+
+	return &entities, nil
+}
+
+func (m *dbBackend) AllStats(code string) (*[]*StatEntity, error) {
+	items, err := models.AllShortStats(code)
+	if err != nil {
+		return nil, err
+	}
+
+	entities := make([]*StatEntity, len(items))
+	for i, item := range items {
+		entities[i] = ConvertStatDbItemToEntity(item)
 	}
 
 	return &entities, nil

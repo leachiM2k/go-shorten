@@ -276,3 +276,25 @@ func (m *ApiHandler) DeleteHandler(ctx *gin.Context) {
 
 	ctx.Status(http.StatusNoContent)
 }
+
+func (m *ApiHandler) GetStatsHandler(ctx *gin.Context) {
+	if m.Handler == nil {
+		ctx.AbortWithError(http.StatusInternalServerError, errors.New("cannot create handler"))
+		return
+	}
+
+	code := ctx.Param("code")
+
+	entities, err := m.Handler.GetStats(code)
+	if err != nil {
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if entities == nil {
+		ctx.AbortWithError(http.StatusNotFound, errors.New("code not found"))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, entities)
+}

@@ -55,6 +55,9 @@ func shortenRouter(apiRoute *gin.RouterGroup) {
 		r.GET("/:code", apiRouting.GetHandler)
 		r.PUT("/:code", apiRouting.UpdateHandler)
 		r.DELETE("/:code", apiRouting.DeleteHandler)
+
+		r.GET("/:code/stats", apiRouting.GetStatsHandler)
+
 	}
 
 }

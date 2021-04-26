@@ -12,6 +12,7 @@ type Backend interface {
 	Update(entity *Entity) (*Entity, error)
 	Delete(owner string, code string) error
 	All(owner string) (*[]*Entity, error)
+	AllStats(code string) (*[]*StatEntity, error)
 }
 
 var backendMap = map[string]Backend{

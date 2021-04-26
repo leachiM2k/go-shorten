@@ -1,8 +1,33 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
-import {Card, Col, Divider, message, Row, Switch, Typography} from 'antd';
-import {Link, useParams} from 'react-router-dom';
+import {Card, Col, Divider, message, Row, Spin, Table, Typography} from 'antd';
+import {useParams} from 'react-router-dom';
 import {GlobalContext} from '../context/GlobalProvider';
 import client from '../lib/client-fetch';
+
+const columns = [
+    {
+        title: 'IP',
+        dataIndex: 'clientIP',
+        key: 'clientIP',
+        sorter: true,
+    },
+    {
+        title: 'User-Agent',
+        dataIndex: 'userAgent',
+        key: 'userAgent',
+        responsive: ['md'],
+        ellipsis: true,
+        sorter: true,
+    },
+    {
+        title: 'Date Time',
+        dataIndex: 'timestamp',
+        key: 'timestamp',
+        render: value => new Date(value).toLocaleString(),
+        responsive: ['md'],
+        sorter: true,
+    },
+];
 
 export default function StatisticsPage(props) {
     const { state: { user } } = useContext(GlobalContext);
@@ -38,13 +63,23 @@ export default function StatisticsPage(props) {
         fetchData();
     }, [user, code, fetchData]);
 
+    function renderData() {
+        return (
+            <Table
+                columns={columns}
+                loading={loading}
+                dataSource={shortStats}/>
+        )
+
+        return (<pre>{JSON.stringify(shortStats, null, 2)}</pre>);
+    }
+
     return (
         <Row>
             <Col offset={6} span={12}>
-                <Typography.Title>
-                    Access Logs for "{code}"
-                </Typography.Title>
-                <Divider/>
+                <Card title={"Access Logs for \"" + code + "\""}>
+                    {renderData()}
+                </Card>
             </Col>
         </Row>
     );
