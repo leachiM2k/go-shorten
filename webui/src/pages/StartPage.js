@@ -134,6 +134,7 @@ export default function StartPage(props) {
                                     <Button danger size="small">Delete</Button>
                                 </Popconfirm>,
                                 <Button size="small" onClick={handleEdit(item.code)}>Edit</Button>,
+                                <Button size="small" href={"/stats/" + item.code}>Stats</Button>,
                             ]}>
                                 <Row style={{ flex: '1' }} justify="space-between">
                                     <Col>
@@ -156,9 +157,11 @@ export default function StartPage(props) {
         );
     } else {
         return (
-            <div>
-                Please login in the right upper corner
-            </div>
+            <Row>
+                <Col offset={6} span={12}>
+                    <p>Please login in the right upper corner</p>
+                </Col>
+            </Row>
         );
     }
 }
