@@ -1,5 +1,5 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
-import {Card, Col, Divider, message, Row, Spin, Table, Typography} from 'antd';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
+import {Card, Col, message, Row, Table} from 'antd';
 import {useParams} from 'react-router-dom';
 import {GlobalContext} from '../context/GlobalProvider';
 import client from '../lib/client-fetch';
@@ -70,8 +70,6 @@ export default function StatisticsPage(props) {
                 loading={loading}
                 dataSource={shortStats}/>
         )
-
-        return (<pre>{JSON.stringify(shortStats, null, 2)}</pre>);
     }
 
     return (
