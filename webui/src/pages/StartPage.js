@@ -1,10 +1,11 @@
-import React, {useCallback, useContext, useEffect, useState} from "react";
+import React, {lazy, useCallback, useContext, useEffect, useState} from "react";
 import {GlobalContext} from '../context/GlobalProvider';
-import {Button, Col, List, message, Popconfirm, Row, Typography} from 'antd';
+import {Button, Card, Col, Form, message, Row, Typography} from 'antd';
 import client from '../lib/client-fetch';
 import {PlusOutlined} from '@ant-design/icons';
-import DrawerForm from '../components/DrawerForm';
-import {Link} from 'react-router-dom';
+import {ShortsList} from '../components/ShortsList';
+
+const DrawerForm = lazy(() => import('../components/DrawerForm'))
 
 export default function StartPage(props) {
     const { state: { loggedIn, user } } = useContext(GlobalContext);
@@ -13,8 +14,7 @@ export default function StartPage(props) {
     const [loading, setLoading] = useState(false);
     const [allShorts, setAllShorts] = useState(null);
     const [editValues, setEditValues] = useState(null);
-
-    const shortenerPrefix = window.location.host + '/';
+    const [form] = Form.useForm();
 
     const fetchDataRaw = async () => {
         if (user === null || !user.token) {
@@ -45,6 +45,9 @@ export default function StartPage(props) {
     }, [user, fetchData]);
 
     const save = async (values) => {
+        if (!values) {
+            return;
+        }
         setFormSaving(true);
         try {
             const options = {
@@ -66,7 +69,7 @@ export default function StartPage(props) {
         setFormSaving(false);
     }
 
-    const handleDelete = code => async () => {
+    const handleDelete = async (code) => {
         try {
             await client.delete('/api/shorten/' + code, {
                 headers: {
@@ -80,8 +83,8 @@ export default function StartPage(props) {
 
     }
 
-    const handleEdit = code => async (event) => {
-        event.preventDefault();
+    const handleEdit = async (code) => {
+        form.resetFields();
         try {
             const result = await client.get('/api/shorten/' + code, {
                 headers: {
@@ -100,6 +103,7 @@ export default function StartPage(props) {
     }
 
     const showDrawer = () => {
+        form.resetFields();
         setDrawerMode('create');
     };
 
@@ -118,44 +122,17 @@ export default function StartPage(props) {
                         </Button>
                     </div>
 
-                    {drawerMode !== null &&
                     <DrawerForm title={drawerMode === "create" ? "Create a new short" : "Update a short"}
                                 actionText={drawerMode === "create" ? "Shorten!" : "Update"}
                                 onSave={save}
+                                form={form}
                                 onClose={onCloseDrawer}
                                 loading={formSaving}
-                                initialValues={editValues}
-                                visible={true}/>}
+                                initialValues={drawerMode === "create" ? {} : editValues}
+                                visible={drawerMode !== null}/>
 
-                    {allShorts && <List
-                        loading={loading}
-                        itemLayout="horizontal"
-                        dataSource={allShorts}
-                        renderItem={item => (
-                            <List.Item actions={[
-                                <Link to={"/stats/" + item.code}>Stats</Link>,
-                                <Link to={"/edit/" + item.code} onClick={handleEdit(item.code)}>Edit</Link>,
-                                <Popconfirm title="Are you sure？" okText="Yes" cancelText="No"
-                                            onConfirm={handleDelete(item.code)}>
-                                    <Button danger size="small">Delete</Button>
-                                </Popconfirm>,
-                            ]}>
-                                <Row style={{ flex: '1' }} justify="space-between">
-                                    <Col>
-                                        <Typography.Text>{item.description || item.link}</Typography.Text>
-                                        <br/>
-                                        <Typography.Link
-                                            href={shortenerPrefix + item.code}>https://{shortenerPrefix}{item.code}</Typography.Link>
-                                    </Col>
-                                    <Col>
-                                        {new Date(item.createdAt).toLocaleDateString()}
-                                        <br/>
-                                        {item.count} visits
-                                    </Col>
-                                </Row>
-                            </List.Item>
-                        )}
-                    />}
+                    {allShorts &&
+                    <ShortsList loading={loading} allShorts={allShorts} onDelete={handleDelete} onEdit={handleEdit}/>}
                 </Col>
             </Row>
         );
@@ -163,7 +140,9 @@ export default function StartPage(props) {
         return (
             <Row>
                 <Col offset={6} span={12}>
-                    <p>Please login in the right upper corner</p>
+                    <Card title="Login required">
+                        <Typography.Paragraph>Please login in the right upper corner</Typography.Paragraph>
+                    </Card>
                 </Col>
             </Row>
         );
