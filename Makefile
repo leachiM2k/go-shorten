@@ -94,7 +94,7 @@ clean-dirs:
 build-webui:
 	@echo "build-webui"
 	@npm install --prefix webui
-	@npm run build --prefix webui
+	@PUBLIC_URL="/" npm run build --prefix webui
 ifeq (,$(wildcard ./bin/go-bindata))
 	@echo "Download and build go-bindata"
 	@env GO111MODULE=off go get github.com/go-bindata/go-bindata/go-bindata

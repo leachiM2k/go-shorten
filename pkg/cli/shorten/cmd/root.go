@@ -8,6 +8,7 @@ import (
 	shortenServer "github.com/leachim2k/go-shorten/pkg/server"
 	"github.com/mrcrgl/pflog/log"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -32,6 +33,10 @@ func NewRootCommand() *cobra.Command {
 			}
 
 			r := gin.New()
+
+			if os.Getenv("APP_ENV") != "dev" {
+				gin.SetMode(gin.ReleaseMode)
+			}
 
 			// LoggerWithFormatter middleware will write the logs to gin.DefaultWriter
 			// By default gin.DefaultWriter = os.Stdout

@@ -4,7 +4,7 @@ FROM alpine
 RUN apk add --no-cache tini ca-certificates
 ENTRYPOINT ["/sbin/tini", "--"]
 
-ENV GIN_MODE=release
+ENV APP_ENV=production
 
 ADD ./dist/linux/amd64/* /
 

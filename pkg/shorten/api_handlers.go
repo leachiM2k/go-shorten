@@ -141,7 +141,12 @@ func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(http.StatusFound, *link)
+	switch ctx.NegotiateFormat(gin.MIMEHTML, gin.MIMEJSON) {
+	case gin.MIMEJSON:
+		ctx.JSON(200, *link)
+	default:
+		ctx.Redirect(http.StatusFound, *link)
+	}
 }
 
 func (m *ApiHandler) HandleCode(code string, clientIp string, userAgent string, referer string) (*string, error) {

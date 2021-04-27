@@ -5,6 +5,7 @@ import (
 	serverMiddleware "github.com/leachim2k/go-shorten/pkg/server/middleware"
 	"github.com/leachim2k/go-shorten/pkg/shorten"
 	"net/http"
+	"regexp"
 	"strings"
 )
 
@@ -19,11 +20,14 @@ func NoRoute(ctx *gin.Context) {
 		return
 	}
 
-	apiRouting := shorten.NewApiHandler()
-	link, err := apiRouting.HandleCode(path, ctx.ClientIP(), ctx.Request.UserAgent(), ctx.Request.Referer())
-	if link != nil && *link != "" {
-		ctx.Redirect(http.StatusFound, *link)
-		return
+	matched, _ := regexp.MatchString("^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-]*$", path)
+	if matched {
+		apiRouting := shorten.NewApiHandler()
+		link, _ := apiRouting.HandleCode(path, ctx.ClientIP(), ctx.Request.UserAgent(), ctx.Request.Referer())
+		if link != nil && *link != "" {
+			ctx.Redirect(http.StatusFound, *link)
+			return
+		}
 	}
 
 	// this is needed because of SPA's self-routing
