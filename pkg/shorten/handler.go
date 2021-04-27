@@ -1,10 +1,13 @@
 package shorten
 
 import (
+	"github.com/gomodule/oauth1/oauth"
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/mrcrgl/pflog/log"
 	"math/rand"
+	"net/url"
+	"strings"
 	"time"
 )
 
@@ -75,7 +78,55 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 		}
 	}(entity)
 
+	link := handleOauth1Link(entity.Link)
+	if link != nil {
+		return *link, nil
+	}
+
 	return entity.Link, nil
+}
+
+func handleOauth1Link(link string) *string {
+	uri, err := url.ParseRequestURI(link)
+	if err != nil {
+		return nil
+	}
+	query := uri.Query()
+
+	if query.Get("oauth_version") != "1.0" {
+		return nil
+	}
+
+	o := oauth.Client{
+		Credentials: oauth.Credentials{
+			Token:  query.Get("oauth_consumer_key"),
+			Secret: query.Get("oauth_consumer_secret"),
+		},
+		SignatureMethod: oauth.HMACSHA1,
+	}
+	cred := oauth.Credentials{
+		Token:  query.Get("oauth_token"),
+		Secret: query.Get("oauth_token_secret"),
+	}
+
+	port := uri.Port()
+	if port != "" {
+		port = ":" + port
+	}
+	bareUrl := uri.Scheme + "://" + uri.Host + port + uri.Path
+
+	for queryKey, _ := range query {
+		if strings.HasPrefix(queryKey, "oauth") {
+			query.Del(queryKey)
+		}
+	}
+	err = o.SignForm(&cred, "GET", bareUrl, query)
+	if err != nil {
+		return nil
+	}
+	uri.RawQuery = query.Encode()
+	signedUrl := uri.String()
+	return &signedUrl
 }
 
 func (m *Handler) AddStat(shortenerId int, clientIp string, userAgent string, referer string) (*dataservice.StatEntity, error) {
