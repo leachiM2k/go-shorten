@@ -11,7 +11,7 @@ import (
 	"sync"
 )
 
-var awsHandler *Handler
+var handler *Handler
 var m sync.RWMutex
 
 type ApiHandler struct {
@@ -22,7 +22,7 @@ type ApiHandler struct {
 func NewApiHandler() *ApiHandler {
 	handler, err := GetHandler()
 	if err != nil {
-		log.Fatalf("cannot create AWS handler: %+v", err)
+		log.Fatalf("cannot create shortener handler: %+v", err)
 	}
 
 	return &ApiHandler{
@@ -31,7 +31,7 @@ func NewApiHandler() *ApiHandler {
 }
 
 func GetHandler() (*Handler, error) {
-	if awsHandler == nil {
+	if handler == nil {
 		m.Lock()
 		defer m.Unlock()
 
@@ -43,7 +43,7 @@ func GetHandler() (*Handler, error) {
 
 	m.RLock()
 	defer m.RUnlock()
-	return awsHandler, nil
+	return handler, nil
 }
 
 func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
@@ -282,6 +282,16 @@ func (m *ApiHandler) DeleteHandler(ctx *gin.Context) {
 	ctx.Status(http.StatusNoContent)
 }
 
+// GetStatsHandler godoc
+// @Summary Get all stats for a code
+// @Description Get all stats for a code
+// @ID readStats
+// @Accept  json
+// @Produce  json
+// @Param code path string true "short code"
+// @Success 200 {array} dataservice.StatEntity
+// @Failure 500 {string} string "fail"
+// @Router /shorten/{code}/stats [get]
 func (m *ApiHandler) GetStatsHandler(ctx *gin.Context) {
 	if m.Handler == nil {
 		ctx.AbortWithError(http.StatusInternalServerError, errors.New("cannot create handler"))

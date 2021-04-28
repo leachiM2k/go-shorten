@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	serverMiddleware "github.com/leachim2k/go-shorten/pkg/server/middleware"
 	"github.com/leachim2k/go-shorten/pkg/shorten"
+	"github.com/leachim2k/go-shorten/pkg/urlutil"
 	"net/http"
 	"regexp"
 	"strings"
@@ -38,6 +39,17 @@ func NewGroup(r *gin.Engine) {
 	v1 := r.Group("/api")
 	{
 		shortenRouter(v1)
+		utilRouter(v1)
+	}
+}
+
+func utilRouter(apiRoute *gin.RouterGroup) {
+	utilRouting := urlutil.NewApiHandler()
+
+	r := apiRoute.Group("/url")
+	{
+		r.GET("/meta/", utilRouting.GetUrlMetaHandler)
+		r.GET("/qrcode/", utilRouting.GetQrCodeHandler)
 	}
 }
 

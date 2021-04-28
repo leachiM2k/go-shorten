@@ -46,6 +46,30 @@ definitions:
       updatedAt:
         type: string
     type: object
+  dataservice.HTMLMeta:
+    properties:
+      description:
+        type: string
+      image:
+        type: string
+      site_name:
+        type: string
+      title:
+        type: string
+    type: object
+  dataservice.StatEntity:
+    properties:
+      clientIP:
+        type: string
+      referer:
+        type: string
+      shortenerID:
+        type: integer
+      timestamp:
+        type: string
+      userAgent:
+        type: string
+    type: object
   dataservice.UpdateRequest:
     properties:
       attributes:
@@ -190,6 +214,32 @@ paths:
           schema:
             $ref: '#/definitions/dataservice.Entity'
       summary: Update a short
+  /shorten/{code}/stats:
+    get:
+      consumes:
+      - application/json
+      description: Get all stats for a code
+      operationId: readStats
+      parameters:
+      - description: short code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dataservice.StatEntity'
+            type: array
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Get all stats for a code
   /shorten/handle/{code}:
     get:
       consumes:
@@ -215,6 +265,64 @@ paths:
           schema:
             type: string
       summary: Handle a short
+  /url/meta:
+    get:
+      consumes:
+      - application/json
+      description: Get all stats for a code
+      operationId: getUrlMetaData
+      parameters:
+      - description: URL to get meta information from
+        in: query
+        name: url
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dataservice.HTMLMeta'
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Get all stats for a code
+  /url/qrcode:
+    get:
+      consumes:
+      - application/json
+      description: Generate QR Code for an URL
+      operationId: getQrCodeForUrl
+      parameters:
+      - description: URL for QR Code
+        in: query
+        name: url
+        required: true
+        type: string
+      - description: image format (svg or png)
+        in: query
+        name: format
+        type: string
+      - description: 'for PNG: width of image'
+        in: query
+        name: width
+        type: integer
+      - description: 'for PNG: height of image'
+        in: query
+        name: height
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "500":
+          description: fail
+          schema:
+            type: string
+      summary: Generate QR Code
 swagger: "2.0"
 x-extension-openapi:
   example: value on a json format

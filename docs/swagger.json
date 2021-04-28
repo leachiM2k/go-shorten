@@ -219,6 +219,132 @@
                     }
                 }
             }
+        },
+        "/shorten/{code}/stats": {
+            "get": {
+                "description": "Get all stats for a code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all stats for a code",
+                "operationId": "readStats",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "short code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/dataservice.StatEntity"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/url/meta": {
+            "get": {
+                "description": "Get all stats for a code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get all stats for a code",
+                "operationId": "getUrlMetaData",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "URL to get meta information from",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dataservice.HTMLMeta"
+                        }
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/url/qrcode": {
+            "get": {
+                "description": "Generate QR Code for an URL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Generate QR Code",
+                "operationId": "getQrCodeForUrl",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "URL for QR Code",
+                        "name": "url",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "image format (svg or png)",
+                        "name": "format",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "for PNG: width of image",
+                        "name": "width",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "for PNG: height of image",
+                        "name": "height",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "500": {
+                        "description": "fail",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -287,6 +413,43 @@
                     "type": "string"
                 },
                 "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "dataservice.HTMLMeta": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "site_name": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dataservice.StatEntity": {
+            "type": "object",
+            "properties": {
+                "clientIP": {
+                    "type": "string"
+                },
+                "referer": {
+                    "type": "string"
+                },
+                "shortenerID": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "userAgent": {
                     "type": "string"
                 }
             }

@@ -37,6 +37,7 @@ func NewRootCommand() *cobra.Command {
 			if os.Getenv("APP_ENV") != "dev" {
 				gin.SetMode(gin.ReleaseMode)
 			}
+			r.ForwardedByClientIP = true
 
 			// LoggerWithFormatter middleware will write the logs to gin.DefaultWriter
 			// By default gin.DefaultWriter = os.Stdout

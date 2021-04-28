@@ -8,7 +8,6 @@ import (
 	"math/rand"
 	"net/url"
 	"strings"
-	"time"
 )
 
 type Handler struct {
@@ -17,7 +16,7 @@ type Handler struct {
 }
 
 func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
-	rand.Seed(time.Now().UnixNano())
+	rand.Seed(clock.Now().UnixNano())
 	return &Handler{
 		Clock:   clock,
 		Backend: backend,
@@ -57,11 +56,11 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 		return "", nil
 	}
 
-	if entity.ExpiresAt != nil && entity.ExpiresAt.Before(time.Now()) {
+	if entity.ExpiresAt != nil && entity.ExpiresAt.Before(m.Clock.Now()) {
 		return "", nil
 	}
 
-	if entity.StartTime != nil && entity.StartTime.After(time.Now()) {
+	if entity.StartTime != nil && entity.StartTime.After(m.Clock.Now()) {
 		return "", nil
 	}
 
@@ -163,7 +162,7 @@ func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*datas
 	entity.MaxCount = request.MaxCount
 	entity.StartTime = request.StartTime
 	entity.ExpiresAt = request.ExpiresAt
-	entity.UpdatedAt = time.Now()
+	entity.UpdatedAt = m.Clock.Now()
 
 	if request.Attributes != nil {
 		if entity.Attributes == nil {

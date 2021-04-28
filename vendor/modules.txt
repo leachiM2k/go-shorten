@@ -4,6 +4,17 @@ github.com/KyleBanks/depth
 github.com/PuerkitoBio/purell
 # github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578
 github.com/PuerkitoBio/urlesc
+# github.com/aaronarduino/goqrsvg v0.0.0-20170617203649-603647895681
+## explicit
+github.com/aaronarduino/goqrsvg
+# github.com/ajstarks/svgo v0.0.0-20210406150507-75cfd577ce75
+## explicit
+github.com/ajstarks/svgo
+# github.com/boombuler/barcode v1.0.1
+## explicit
+github.com/boombuler/barcode
+github.com/boombuler/barcode/qr
+github.com/boombuler/barcode/utils
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
@@ -117,6 +128,8 @@ github.com/ugorji/go/codec
 golang.org/x/crypto/sha3
 # golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
 ## explicit
+golang.org/x/net/html
+golang.org/x/net/html/atom
 golang.org/x/net/idna
 golang.org/x/net/webdav
 golang.org/x/net/webdav/internal/xml

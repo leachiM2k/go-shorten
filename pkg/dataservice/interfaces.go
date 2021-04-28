@@ -45,3 +45,10 @@ type UpdateRequest struct {
 	ExpiresAt   *time.Time             `json:"expiresAt,omitempty"`
 	Attributes  map[string]interface{} `json:"attributes,omitempty"`
 }
+
+type HTMLMeta struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Image       string `json:"image"`
+	SiteName    string `json:"site_name"`
+}
