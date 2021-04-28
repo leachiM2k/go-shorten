@@ -54,6 +54,10 @@ github.com/golang/protobuf/proto
 # github.com/gomodule/oauth1 v0.0.0-20181215000758-9a59ed3b0a84
 ## explicit
 github.com/gomodule/oauth1/oauth
+# github.com/hashicorp/golang-lru v0.5.4
+## explicit
+github.com/hashicorp/golang-lru
+github.com/hashicorp/golang-lru/simplelru
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
 # github.com/jonboulle/clockwork v0.1.0

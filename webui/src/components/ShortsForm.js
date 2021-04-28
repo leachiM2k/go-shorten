@@ -3,11 +3,21 @@ import React from 'react';
 import moment from 'moment';
 import './DrawerForm.css';
 import {GlobalOutlined} from '@ant-design/icons';
+import client from '../lib/client-fetch';
 
 const DrawerForm = ({ form, initialValues }) => {
     if (initialValues) {
         initialValues.startTime = initialValues.startTime && moment(initialValues.startTime);
         initialValues.expiresAt = initialValues.expiresAt && moment(initialValues.expiresAt);
+    }
+
+    const handleUrlBlur = async () => {
+        try {
+            await form.validateFields(['link']);
+            const result = await client.get('/api/url/meta/', { params: { url: form.getFieldValue('link') } });
+            form.setFields([{ name: 'description', value: result.data.title || result.data.description }]);
+        } catch (error) {
+        }
     }
 
     return (
@@ -28,8 +38,9 @@ const DrawerForm = ({ form, initialValues }) => {
                     >
                         <Input
                             style={{ width: '100%' }}
-                            addonBefore={<GlobalOutlined />}
+                            addonBefore={<GlobalOutlined/>}
                             placeholder="Please enter url"
+                            onBlur={handleUrlBlur}
                         />
                     </Form.Item>
                 </Col>

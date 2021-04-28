@@ -5,6 +5,7 @@ import (
 	"github.com/ajstarks/svgo"
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
+	"github.com/hashicorp/golang-lru"
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
 	"github.com/pkg/errors"
@@ -16,24 +17,31 @@ import (
 
 type Handler struct {
 	Clock clockwork.Clock
+	Cache *lru.ARCCache
 }
 
-func NewHandler(clock clockwork.Clock) *Handler {
+func NewHandler(clock clockwork.Clock, cache *lru.ARCCache) *Handler {
 	return &Handler{
 		Clock: clock,
+		Cache: cache,
 	}
 }
 
 func (m *Handler) GetUrlMeta(url string) (*dataservice.HTMLMeta, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, errors.New("can not fetch given url")
+	meta, ok := m.Cache.Get(url)
+
+	if !ok {
+		resp, err := http.Get(url)
+		if err != nil {
+			return nil, errors.New("can not fetch given url")
+		}
+		defer resp.Body.Close()
+
+		meta = extract(resp.Body)
+		m.Cache.Add(url, meta)
 	}
-	defer resp.Body.Close()
 
-	meta := extract(resp.Body)
-
-	return meta, nil
+	return meta.(*dataservice.HTMLMeta), nil
 }
 
 type ImageFormat string

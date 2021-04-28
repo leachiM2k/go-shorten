@@ -3,6 +3,7 @@ package urlutil
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/jonboulle/clockwork"
 	"github.com/mrcrgl/pflog/log"
 	"github.com/pkg/errors"
@@ -37,7 +38,9 @@ func GetHandler() (*Handler, error) {
 		m.Lock()
 		defer m.Unlock()
 
-		handler := NewHandler(clockwork.NewRealClock())
+		cache, _ := lru.NewARC(1024)
+
+		handler := NewHandler(clockwork.NewRealClock(), cache)
 		return handler, nil
 	}
 

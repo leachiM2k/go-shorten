@@ -56,10 +56,13 @@ A browser window should open automatically. Otherwise please visit http://localh
 
 A proxy is already configured and points to the backend at  http://localhost:8080
 
-# Missing functionality
+# Recently added features
 
-* [ ] Generate QR Code for an URL (API ready at: /api/url/meta/?url=...) 
-* [ ] Get Description automatically by parsing the given URL (API ready at: /api/url/qrcode/?url=...) 
+* [x] Get Description automatically by parsing the given URL (API ready at: /api/url/meta/?url=...)
+
+# Missing features
+
+* [ ] Generate QR Code for an URL (API ready at: /api/url/qrcode/?url=...)
 * [ ] Add more backends:
     * [ ] File
     * [ ] MySQL
