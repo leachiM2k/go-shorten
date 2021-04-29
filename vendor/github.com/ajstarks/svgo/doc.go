@@ -99,7 +99,7 @@ The SVG type:
 	type SVG struct {
         Writer   io.Writer
 	}
-
+	
 Most operations are methods on this type, specifying the destination io.Writer.
 
 The Offcolor type:
