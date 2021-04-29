@@ -12,15 +12,6 @@ import (
 
 func NoRoute(ctx *gin.Context) {
 	path := strings.TrimLeft(ctx.Request.URL.Path, "/")
-	if path == "" {
-		path = "index.html"
-	}
-	_, err := AssetInfo(path)
-	if err == nil {
-		ctx.FileFromFS(ctx.Request.URL.Path, AssetFile())
-		return
-	}
-
 	matched, _ := regexp.MatchString("^[abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-]*$", path)
 	if matched {
 		apiRouting := shorten.NewApiHandler()
@@ -30,9 +21,6 @@ func NoRoute(ctx *gin.Context) {
 			return
 		}
 	}
-
-	// this is needed because of SPA's self-routing
-	ctx.FileFromFS("/", AssetFile())
 }
 
 func NewGroup(r *gin.Engine) {

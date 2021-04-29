@@ -2,7 +2,7 @@ import React, {createContext, useReducer} from "react";
 import Reducer, {ReducerActions} from './Reducer';
 
 const initialState = {
-    loggedIn: false,
+    loggedIn: null,
     user: null,
     loading: false,
     teams: null,

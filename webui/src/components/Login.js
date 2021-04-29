@@ -15,8 +15,17 @@ const Login = ({ clientId, loggedIn, onLogin, ...props }) => {
     };
 
     const onFailure = res => {
+        if (typeof onLogin === 'function') {
+            onLogin();
+        }
         console.log('***** [Login failed] res:', res);
     };
+
+    const onAutoLoadFinished = success => {
+        if (!success && typeof onLogin === 'function') {
+            onLogin();
+        }
+    }
 
     const customButton = renderProps => (
         <Button
@@ -32,6 +41,7 @@ const Login = ({ clientId, loggedIn, onLogin, ...props }) => {
                      render={customButton}
                      onSuccess={onSuccess}
                      onFailure={onFailure}
+                     onAutoLoadFinished={onAutoLoadFinished}
                      cookiePolicy={'single_host_origin'}
                      isSignedIn={true}
         />

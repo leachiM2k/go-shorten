@@ -1,6 +1,6 @@
 import React, {lazy, useCallback, useContext, useEffect, useState} from "react";
 import {GlobalContext} from '../context/GlobalProvider';
-import {Button, Card, Col, Form, List, message, Row, Typography} from 'antd';
+import {Button, Card, Col, Form, message, Row, Typography} from 'antd';
 import client from '../lib/client-fetch';
 import {PlusOutlined} from '@ant-design/icons';
 import {ShortsList} from '../components/ShortsList';
@@ -18,7 +18,7 @@ export default function StartPage(props) {
     const [form] = Form.useForm();
 
     const fetchDataRaw = async () => {
-        if (user === null || !user.token) {
+        if (user === null || !user || !user.token) {
             return;
         }
 
@@ -113,7 +113,7 @@ export default function StartPage(props) {
         setDrawerMode(null);
     };
 
-    if (loggedIn) {
+    if (loggedIn === true) {
         return (
             <Row gutter={10}>
                 <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
@@ -137,7 +137,7 @@ export default function StartPage(props) {
                 </Col>
             </Row>
         );
-    } else {
+    } else if(loggedIn === false) {
         return (
             <Row>
                 <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
@@ -151,4 +151,6 @@ export default function StartPage(props) {
             </Row>
         );
     }
+
+    return (<div/>);
 }

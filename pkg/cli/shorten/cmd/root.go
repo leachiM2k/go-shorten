@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/leachim2k/go-shorten/docs"
 	shortenServer "github.com/leachim2k/go-shorten/pkg/server"
+	"github.com/leachim2k/go-shorten/pkg/ui"
 	"github.com/mrcrgl/pflog/log"
 	"net/http"
 	"os"
@@ -59,13 +60,14 @@ func NewRootCommand() *cobra.Command {
 			r.Use(gin.Recovery())
 
 			shortenServer.NewGroup(r)
+			ui.NewGroup(r)
 
 			r.GET("/swagger", func(c *gin.Context) {
 				c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")
 			})
 			r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-			r.NoRoute(shortenServer.NoRoute)
+			r.NoRoute(ui.NoRoute, shortenServer.NoRoute)
 
 			err = endless.ListenAndServe(":"+strconv.Itoa(options.Current.RESTListenPort), r)
 			if err != nil {

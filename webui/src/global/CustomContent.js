@@ -1,6 +1,7 @@
 import React, {Suspense} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import routes from '../data/routing';
+import {Spin} from 'antd';
 
 // A special wrapper for <Route> that knows how to
 // handle "sub"-routes by passing them in a `routes`
@@ -8,7 +9,7 @@ import routes from '../data/routing';
 function RouteWithSubRoutes({ component: C, path, routes, restrictToGroups, ...rest }) {
     return (
         <Route path={path}>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Spin/>}>
                 <C routes={routes}/>
             </Suspense>
         </Route>

@@ -9,7 +9,7 @@ import CustomRightHeader from './global/CustomRightHeader';
 const { Header, Content, Footer } = Layout;
 
 const App = () => (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
         <GlobalProvider>
             <Layout>
                 <Header className="header">
