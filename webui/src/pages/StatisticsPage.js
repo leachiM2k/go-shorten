@@ -74,7 +74,7 @@ export default function StatisticsPage(props) {
 
     return (
         <Row>
-            <Col offset={6} span={12}>
+            <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
                 <Card title={"Access Logs for \"" + code + "\""}>
                     {renderData()}
                 </Card>

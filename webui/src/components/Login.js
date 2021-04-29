@@ -28,15 +28,13 @@ const Login = ({ clientId, loggedIn, onLogin, ...props }) => {
     )
 
     return (
-        <div>
-            <GoogleLogin clientId={clientId}
-                         render={customButton}
-                         onSuccess={onSuccess}
-                         onFailure={onFailure}
-                         cookiePolicy={'single_host_origin'}
-                         isSignedIn={true}
-            />
-        </div>
+        <GoogleLogin clientId={clientId}
+                     render={customButton}
+                     onSuccess={onSuccess}
+                     onFailure={onFailure}
+                     cookiePolicy={'single_host_origin'}
+                     isSignedIn={true}
+        />
     );
 };
 

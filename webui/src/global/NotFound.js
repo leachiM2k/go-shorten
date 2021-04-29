@@ -35,7 +35,7 @@ export function NotFound() {
 
     return (
         <Row>
-            <Col offset={6} span={12}>
+            <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
                 {loading && <Spin/>}
                 {!loading && <div>
                     <Typography.Title>

@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {GoogleLogout} from 'react-google-login';
-import {Button} from 'antd';
+import {Button, Col, Row} from 'antd';
 import {GoogleCircleFilled} from '@ant-design/icons';
 import {GlobalContext} from '../context/GlobalProvider';
 
@@ -18,6 +18,7 @@ const Logout = ({ clientId, ...props }) => {
 
     const customButton = renderProps => (
         <Button
+            type="link"
             icon={<GoogleCircleFilled/>}
             onClick={renderProps.onClick}
             disabled={renderProps.disabled}>
@@ -26,15 +27,17 @@ const Logout = ({ clientId, ...props }) => {
     );
 
     return (
-        <div style={{ color: 'white', display: 'inline-flex', alignItems: 'center' }}>
-            <div style={{ marginRight: '20px' }}>Logged in as: {user.name}</div>
-            <GoogleLogout
-                clientId={clientId}
-                render={customButton}
-                onLogoutSuccess={onSuccess}
-                onFailure={onFailure}
-            />
-        </div>
+        <Row align="middle">
+            <Col>Logged in as: {user.name}</Col>
+            <Col>
+                <GoogleLogout
+                    clientId={clientId}
+                    render={customButton}
+                    onLogoutSuccess={onSuccess}
+                    onFailure={onFailure}
+                />
+            </Col>
+        </Row>
     );
 };
 
