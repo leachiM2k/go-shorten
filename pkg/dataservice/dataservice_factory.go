@@ -15,17 +15,18 @@ type Backend interface {
 	AllStats(code string) (*[]*StatEntity, error)
 }
 
-var backendMap = map[string]Backend{
-	options.BackendInMemory:   NewInmemoryBackend(),
-	options.BackendPostgreSQL: NewDBBackend(),
+var backendMap = map[string]func() Backend{
+	options.BackendFile:       func() Backend { return NewFileBackend() },
+	options.BackendInMemory:   func() Backend { return NewInmemoryBackend() },
+	options.BackendPostgreSQL: func() Backend { return NewDBBackend() },
 }
 
 func GetDataService(key string) Backend {
 	if val, ok := backendMap[key]; ok {
 		log.Infof("using data service backend: %s", key)
-		return val
+		return val()
 	}
-	log.Warningf("no data service backend found for: %s", key)
+	log.Fatalf("no data service backend found for: %s", key)
 	return nil
 }
 

@@ -43,15 +43,6 @@ var doc = `{
                 ],
                 "summary": "Get all user shorts",
                 "operationId": "readAll",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "short code",
-                        "name": "code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -413,6 +404,9 @@ var doc = `{
                 },
                 "expiresAt": {
                     "type": "string"
+                },
+                "id": {
+                    "type": "integer"
                 },
                 "link": {
                     "type": "string"

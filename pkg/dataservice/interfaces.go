@@ -3,7 +3,7 @@ package dataservice
 import "time"
 
 type Entity struct {
-	ID          int                     `json:"-"`
+	ID          int                     `json:"id,omitempty"`
 	Owner       string                  `json:"owner"`
 	Link        string                  `json:"link"`
 	Code        string                  `json:"code"`

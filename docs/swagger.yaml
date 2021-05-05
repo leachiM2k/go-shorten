@@ -35,6 +35,8 @@ definitions:
         type: string
       expiresAt:
         type: string
+      id:
+        type: integer
       link:
         type: string
       maxCount:
@@ -108,12 +110,6 @@ paths:
       - application/json
       description: Get all shorts for an user
       operationId: readAll
-      parameters:
-      - description: short code
-        in: path
-        name: code
-        required: true
-        type: string
       produces:
       - application/json
       responses:

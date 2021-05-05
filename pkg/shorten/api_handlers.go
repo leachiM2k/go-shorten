@@ -60,7 +60,6 @@ func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
 // @ID readAll
 // @Accept  json
 // @Produce  json
-// @Param code path string true "short code"
 // @Success 200 {array} dataservice.Entity
 // @Failure 500 {string} string "fail"
 // @Router /shorten [get]
@@ -136,7 +135,7 @@ func (m *ApiHandler) HandleCodeHandler(ctx *gin.Context) {
 		return
 	}
 
-	if *link == "" {
+	if link == nil || *link == "" {
 		ctx.AbortWithError(http.StatusNotFound, errors.New("code not found"))
 		return
 	}
