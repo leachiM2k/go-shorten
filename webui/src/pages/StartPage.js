@@ -1,10 +1,10 @@
 import React, {lazy, useCallback, useContext, useEffect, useState} from "react";
 import {GlobalContext} from '../context/GlobalProvider';
-import {Button, Card, Col, Form, message, Row, Typography} from 'antd';
+import {Button, Col, Form, message, Row} from 'antd';
 import client from '../lib/client-fetch';
 import {PlusOutlined} from '@ant-design/icons';
 import {ShortsList} from '../components/ShortsList';
-import Features from '../components/Features';
+import LoggedOutHomepage from '../components/StartPage/LoggedOutHomepage';
 
 const DrawerForm = lazy(() => import('../components/DrawerForm'))
 
@@ -113,7 +113,9 @@ export default function StartPage(props) {
         setDrawerMode(null);
     };
 
-    if (loggedIn === true) {
+    if (loggedIn === false) {
+        return <LoggedOutHomepage/>;
+    } else if (loggedIn === true) {
         return (
             <Row gutter={10}>
                 <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
@@ -134,19 +136,6 @@ export default function StartPage(props) {
 
                     {allShorts &&
                     <ShortsList loading={loading} allShorts={allShorts} onDelete={handleDelete} onEdit={handleEdit}/>}
-                </Col>
-            </Row>
-        );
-    } else if(loggedIn === false) {
-        return (
-            <Row>
-                <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>
-                    <Card>
-                        <Typography.Title>Here is your new URL shortener</Typography.Title>
-                        <Typography.Paragraph>To start using it, <strong>please login via login button at the bottom</strong>.</Typography.Paragraph>
-                        <Typography.Paragraph>This free URL shortener offers following features:</Typography.Paragraph>
-                        <Features/>
-                    </Card>
                 </Col>
             </Row>
         );

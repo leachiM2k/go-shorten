@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, List} from 'antd';
+import {Card, Col, Row} from 'antd';
 
 const data = [
     {
@@ -22,16 +22,18 @@ const data = [
 
 const Features = props => {
     return (
-        <List
-            grid={{ gutter: 16, column: 2 }}
-            dataSource={data}
-            renderItem={item => (
-                <List.Item>
-                    <Card headStyle={{background:'#006d77',color:'#edf6f9'}} bodyStyle={{background:'#def9fc'}} title={item.title}>{item.content}</Card>
-                </List.Item>
-            )}
-        />
+        <Row gutter={16}>
+            {data.map(item => (
+                <Col xs={24} sm={24} md={12} style={{ display: 'flex' }}>
+                    <Card style={{ flex: 1, display: 'flex', flexDirection:'column', marginBottom: '16px' }}
+                          headStyle={{ background: '#006d77', color: '#edf6f9' }}
+                          bodyStyle={{ background: '#def9fc', flex: 1 }} title={item.title}>
+                        {item.content}
+                    </Card>
+                </Col>
+            ))}
+        </Row>
     );
-};
+}
 
 export default Features;

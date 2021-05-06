@@ -15,12 +15,12 @@ const baseDir = "./.data"
 type fileBackend struct{}
 
 func (m *fileBackend) All(owner string) (*[]*Entity, error) {
+	entities := make([]*Entity, 0)
+
 	dirEntries, err := os.ReadDir(path.Join(baseDir, owner[:2], owner))
 	if err != nil {
-		return nil, err
+		return &entities, nil
 	}
-
-	entities := make([]*Entity, 0)
 
 	for _, entry := range dirEntries {
 		if entry.IsDir() {
