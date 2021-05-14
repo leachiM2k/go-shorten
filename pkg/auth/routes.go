@@ -42,11 +42,11 @@ func redirectHandler(c *gin.Context) {
 
 	callbackUrl := *c.Request.URL
 	callbackUrl.Host = c.Request.Host
-	callbackUrl.Scheme = "https"
+	callbackUrl.Scheme = "http"
 
 	proto := c.Request.Header.Get("X-Forwarded-Proto")
-	if c.Request.TLS == nil || (proto != "" && strings.ToLower(proto) != "https") {
-		callbackUrl.Scheme = "http"
+	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") {
+		callbackUrl.Scheme = "https"
 	}
 
 	providerSecrets := map[string]map[string]string{}
@@ -101,11 +101,11 @@ func callbackHandler(c *gin.Context) {
 
 	callbackUrl := *c.Request.URL
 	callbackUrl.Host = c.Request.Host
-	callbackUrl.Scheme = "https"
+	callbackUrl.Scheme = "http"
 
 	proto := c.Request.Header.Get("X-Forwarded-Proto")
-	if c.Request.TLS == nil || (proto != "" && strings.ToLower(proto) != "https") {
-		callbackUrl.Scheme = "http"
+	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") {
+		callbackUrl.Scheme = "https"
 	}
 	callbackUrl.Path = "/ui/login/"
 
