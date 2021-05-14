@@ -6,7 +6,7 @@ require (
 	github.com/aaronarduino/goqrsvg v0.0.0-20170617203649-603647895681
 	github.com/ajstarks/svgo v0.0.0-20210406150507-75cfd577ce75
 	github.com/boombuler/barcode v1.0.1
-	github.com/danilopolani/gocialite v1.0.2 // indirect
+	github.com/danilopolani/gocialite v1.0.2
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-gonic/gin v1.7.1
@@ -24,6 +24,7 @@ require (
 	github.com/mrcrgl/bytesf v0.0.0-20190110210757-afb18f806d31 // indirect
 	github.com/mrcrgl/pflog v0.0.0-20190110105407-ca8e1bd6d621
 	github.com/mrcrgl/timef v0.0.1 // indirect
+	github.com/oleiade/reflections v1.0.1 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/spf13/cobra v1.0.0
@@ -34,6 +35,7 @@ require (
 	github.com/ugorji/go v1.2.5 // indirect
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
+	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
 	golang.org/x/sys v0.0.0-20210412220455-f1c623a9e750 // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	gopkg.in/danilopolani/gocialite.v1 v1.0.2
