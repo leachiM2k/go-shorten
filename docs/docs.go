@@ -49,7 +49,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dataservice.Entity"
+                                "$ref": "#/definitions/interfaces.Entity"
                             }
                         }
                     },
@@ -80,7 +80,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dataservice.CreateRequest"
+                            "$ref": "#/definitions/interfaces.CreateRequest"
                         }
                     }
                 ],
@@ -88,7 +88,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     }
                 }
@@ -154,7 +154,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     },
                     "500": {
@@ -189,7 +189,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dataservice.UpdateRequest"
+                            "$ref": "#/definitions/interfaces.UpdateRequest"
                         }
                     }
                 ],
@@ -197,7 +197,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     }
                 }
@@ -251,7 +251,7 @@ var doc = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dataservice.StatEntity"
+                                "$ref": "#/definitions/interfaces.StatEntity"
                             }
                         }
                     },
@@ -288,7 +288,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.HTMLMeta"
+                            "$ref": "#/definitions/interfaces.HTMLMeta"
                         }
                     },
                     "500": {
@@ -353,7 +353,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "dataservice.CreateRequest": {
+        "interfaces.CreateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -383,7 +383,7 @@ var doc = `{
                 }
             }
         },
-        "dataservice.Entity": {
+        "interfaces.Entity": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -425,7 +425,7 @@ var doc = `{
                 }
             }
         },
-        "dataservice.HTMLMeta": {
+        "interfaces.HTMLMeta": {
             "type": "object",
             "properties": {
                 "description": {
@@ -442,7 +442,7 @@ var doc = `{
                 }
             }
         },
-        "dataservice.StatEntity": {
+        "interfaces.StatEntity": {
             "type": "object",
             "properties": {
                 "clientIP": {
@@ -462,7 +462,7 @@ var doc = `{
                 }
             }
         },
-        "dataservice.UpdateRequest": {
+        "interfaces.UpdateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {

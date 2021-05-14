@@ -61,7 +61,7 @@ func (m *ApiHandler) MissingCodeHandler(ctx *gin.Context) {
 // @ID readAll
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} dataservice.Entity
+// @Success 200 {array} interfaces.Entity
 // @Failure 500 {string} string "fail"
 // @Router /shorten [get]
 func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {
@@ -93,7 +93,7 @@ func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Success 200 {object} dataservice.Entity
+// @Success 200 {object} interfaces.Entity
 // @Failure 500 {string} string "fail"
 // @Router /shorten/{code} [get]
 func (m *ApiHandler) GetHandler(ctx *gin.Context) {
@@ -180,8 +180,8 @@ func (m *ApiHandler) HandleCode(code string, clientIp string, userAgent string, 
 // @ID create
 // @Accept  json
 // @Produce  json
-// @Param account body dataservice.CreateRequest true "Create Request"
-// @Success 200 {object} dataservice.Entity
+// @Param account body interfaces.CreateRequest true "Create Request"
+// @Success 200 {object} interfaces.Entity
 // @Router /shorten/ [post]
 func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 	if m.Handler == nil {
@@ -220,8 +220,8 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Param account body dataservice.UpdateRequest true "Update Request"
-// @Success 200 {object} dataservice.Entity
+// @Param account body interfaces.UpdateRequest true "Update Request"
+// @Success 200 {object} interfaces.Entity
 // @Router /shorten/{code} [put]
 func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 	if m.Handler == nil {
@@ -289,7 +289,7 @@ func (m *ApiHandler) DeleteHandler(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param code path string true "short code"
-// @Success 200 {array} dataservice.StatEntity
+// @Success 200 {array} interfaces.StatEntity
 // @Failure 500 {string} string "fail"
 // @Router /shorten/{code}/stats [get]
 func (m *ApiHandler) GetStatsHandler(ctx *gin.Context) {

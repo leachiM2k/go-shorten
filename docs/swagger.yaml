@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  dataservice.CreateRequest:
+  interfaces.CreateRequest:
     properties:
       attributes:
         additionalProperties: true
@@ -20,7 +20,7 @@ definitions:
       startTime:
         type: string
     type: object
-  dataservice.Entity:
+  interfaces.Entity:
     properties:
       attributes:
         additionalProperties: true
@@ -48,7 +48,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-  dataservice.HTMLMeta:
+  interfaces.HTMLMeta:
     properties:
       description:
         type: string
@@ -59,7 +59,7 @@ definitions:
       title:
         type: string
     type: object
-  dataservice.StatEntity:
+  interfaces.StatEntity:
     properties:
       clientIP:
         type: string
@@ -72,7 +72,7 @@ definitions:
       userAgent:
         type: string
     type: object
-  dataservice.UpdateRequest:
+  interfaces.UpdateRequest:
     properties:
       attributes:
         additionalProperties: true
@@ -117,7 +117,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dataservice.Entity'
+              $ref: '#/definitions/interfaces.Entity'
             type: array
         "500":
           description: fail
@@ -136,14 +136,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/dataservice.CreateRequest'
+          $ref: '#/definitions/interfaces.CreateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dataservice.Entity'
+            $ref: '#/definitions/interfaces.Entity'
       summary: Add a new short
   /shorten/{code}:
     delete:
@@ -178,7 +178,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dataservice.Entity'
+            $ref: '#/definitions/interfaces.Entity'
         "500":
           description: fail
           schema:
@@ -201,14 +201,14 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/dataservice.UpdateRequest'
+          $ref: '#/definitions/interfaces.UpdateRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dataservice.Entity'
+            $ref: '#/definitions/interfaces.Entity'
       summary: Update a short
   /shorten/{code}/stats:
     get:
@@ -229,7 +229,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/dataservice.StatEntity'
+              $ref: '#/definitions/interfaces.StatEntity'
             type: array
         "500":
           description: fail
@@ -279,7 +279,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dataservice.HTMLMeta'
+            $ref: '#/definitions/interfaces.HTMLMeta'
         "500":
           description: fail
           schema:

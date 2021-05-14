@@ -56,7 +56,7 @@ func GetHandler() (*Handler, error) {
 // @Accept  json
 // @Produce  json
 // @Param url query string true "URL to get meta information from"
-// @Success 200 {object} dataservice.HTMLMeta
+// @Success 200 {object} interfaces.HTMLMeta
 // @Failure 500 {string} string "fail"
 // @Router /url/meta [get]
 func (m *ApiHandler) GetUrlMetaHandler(ctx *gin.Context) {

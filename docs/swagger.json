@@ -35,7 +35,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dataservice.Entity"
+                                "$ref": "#/definitions/interfaces.Entity"
                             }
                         }
                     },
@@ -66,7 +66,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dataservice.CreateRequest"
+                            "$ref": "#/definitions/interfaces.CreateRequest"
                         }
                     }
                 ],
@@ -74,7 +74,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     }
                 }
@@ -140,7 +140,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     },
                     "500": {
@@ -175,7 +175,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dataservice.UpdateRequest"
+                            "$ref": "#/definitions/interfaces.UpdateRequest"
                         }
                     }
                 ],
@@ -183,7 +183,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.Entity"
+                            "$ref": "#/definitions/interfaces.Entity"
                         }
                     }
                 }
@@ -237,7 +237,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/dataservice.StatEntity"
+                                "$ref": "#/definitions/interfaces.StatEntity"
                             }
                         }
                     },
@@ -274,7 +274,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dataservice.HTMLMeta"
+                            "$ref": "#/definitions/interfaces.HTMLMeta"
                         }
                     },
                     "500": {
@@ -339,7 +339,7 @@
         }
     },
     "definitions": {
-        "dataservice.CreateRequest": {
+        "interfaces.CreateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -369,7 +369,7 @@
                 }
             }
         },
-        "dataservice.Entity": {
+        "interfaces.Entity": {
             "type": "object",
             "properties": {
                 "attributes": {
@@ -411,7 +411,7 @@
                 }
             }
         },
-        "dataservice.HTMLMeta": {
+        "interfaces.HTMLMeta": {
             "type": "object",
             "properties": {
                 "description": {
@@ -428,7 +428,7 @@
                 }
             }
         },
-        "dataservice.StatEntity": {
+        "interfaces.StatEntity": {
             "type": "object",
             "properties": {
                 "clientIP": {
@@ -448,7 +448,7 @@
                 }
             }
         },
-        "dataservice.UpdateRequest": {
+        "interfaces.UpdateRequest": {
             "type": "object",
             "properties": {
                 "attributes": {
