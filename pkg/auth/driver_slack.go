@@ -1,4 +1,4 @@
-package driver
+package auth
 
 import (
 	"encoding/json"
