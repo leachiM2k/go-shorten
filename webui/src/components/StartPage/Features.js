@@ -23,8 +23,8 @@ const data = [
 const Features = props => {
     return (
         <Row gutter={16}>
-            {data.map(item => (
-                <Col xs={24} sm={24} md={12} style={{ display: 'flex' }}>
+            {data.map((item, idx) => (
+                <Col key={'feature-' + idx} xs={24} sm={24} md={12} style={{ display: 'flex' }}>
                     <Card style={{ flex: 1, display: 'flex', flexDirection:'column', marginBottom: '16px' }}
                           headStyle={{ background: '#006d77', color: '#edf6f9' }}
                           bodyStyle={{ background: '#def9fc', flex: 1 }} title={item.title}>

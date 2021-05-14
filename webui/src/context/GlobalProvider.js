@@ -1,17 +1,43 @@
-import React, {createContext, useReducer} from "react";
+import React, {createContext, useEffect, useReducer} from "react";
 import Reducer, {ReducerActions} from './Reducer';
+import useStickyState from '../lib/use-sticky-state';
+import client from '../lib/client-fetch';
+import {message} from 'antd';
 
 const initialState = {
-    loggedIn: null,
     user: null,
     loading: false,
-    teams: null,
 };
 
 export const GlobalContext = createContext(initialState);
 
 const GlobalProvider = ({ children }) => {
-    const [state, dispatch] = useReducer(Reducer, initialState);
+    const [stickyState, setStickyState] = useStickyState({}, 'go-shorten-state');
+    const [state, dispatch] = useReducer(Reducer, { ...initialState, ...stickyState });
+
+    useEffect(() => {
+        setStickyState(state);
+    }, [state, setStickyState]);
+
+    useEffect(() => {
+        (async function fetchAuthInfo() {
+            if (!state.token) {
+                return;
+            }
+            try {
+                const result = await client.get('/auth/', {
+                    headers: {
+                        'Authorization': 'Bearer ' + state.token,
+                    }
+                });
+                setUser(result.data);
+            } catch (error) {
+                message.error('Authentication failed. Please login again.');
+                setUser(null);
+                setToken(null);
+            }
+        })();
+    }, [state.token]);
 
     const setUser = user => {
         dispatch({
@@ -20,10 +46,10 @@ const GlobalProvider = ({ children }) => {
         })
     }
 
-    const setLoggedIn = isLoggedIn => {
+    const setToken = user => {
         dispatch({
-            type: ReducerActions.setLoggedIn,
-            payload: isLoggedIn
+            type: ReducerActions.setToken,
+            payload: user
         })
     }
 
@@ -32,7 +58,7 @@ const GlobalProvider = ({ children }) => {
             state,
             dispatch,
             setUser,
-            setLoggedIn,
+            setToken,
         }}>
             {children}
         </GlobalContext.Provider>

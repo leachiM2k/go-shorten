@@ -5,6 +5,7 @@ import (
 	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
 	_ "github.com/leachim2k/go-shorten/docs"
+	"github.com/leachim2k/go-shorten/pkg/auth"
 	shortenServer "github.com/leachim2k/go-shorten/pkg/server"
 	"github.com/leachim2k/go-shorten/pkg/ui"
 	"github.com/mrcrgl/pflog/log"
@@ -57,10 +58,12 @@ func NewRootCommand() *cobra.Command {
 					param.ErrorMessage,
 				)
 			}))
+			r.Use(gin.ErrorLogger())
 			r.Use(gin.Recovery())
 
 			shortenServer.NewGroup(r)
 			ui.NewGroup(r)
+			auth.NewGroup(r)
 
 			r.GET("/swagger", func(c *gin.Context) {
 				c.Redirect(http.StatusMovedPermanently, "/swagger/index.html")

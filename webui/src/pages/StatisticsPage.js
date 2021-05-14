@@ -30,13 +30,13 @@ const columns = [
 ];
 
 export default function StatisticsPage(props) {
-    const { state: { user } } = useContext(GlobalContext);
+    const { state: { user, token } } = useContext(GlobalContext);
     let { code } = useParams();
     const [loading, setLoading] = useState(false);
     const [shortStats, setShortStats] = useState(null);
 
     const fetchDataRaw = async () => {
-        if (user === null || !user.token) {
+        if (!token) {
             return;
         }
 
@@ -44,7 +44,7 @@ export default function StatisticsPage(props) {
         try {
             const result = await client.get('/api/shorten/' + code + "/stats", {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             });
             setShortStats(result.data);

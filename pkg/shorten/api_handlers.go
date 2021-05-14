@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/jonboulle/clockwork"
+	"github.com/leachim2k/go-shorten/pkg/auth/middleware"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
-	"github.com/leachim2k/go-shorten/pkg/server/middleware"
 	"github.com/mrcrgl/pflog/log"
 	"net/http"
 	"sync"
@@ -69,7 +69,7 @@ func (m *ApiHandler) GetAllHandler(ctx *gin.Context) {
 		return
 	}
 
-	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(*middleware.AuthCustomClaims)
 
 	entities, err := m.Handler.GetAll(jwtClaim.Subject)
 	if err != nil {
@@ -195,7 +195,7 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 		return
 	}
 
-	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(*middleware.AuthCustomClaims)
 	createRequest.Owner = &jwtClaim.Subject
 
 	if createRequest.Owner == nil || createRequest.Link == nil {
@@ -235,7 +235,7 @@ func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 		return
 	}
 
-	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(*middleware.AuthCustomClaims)
 	updateRequest.Owner = &jwtClaim.Subject
 
 	if updateRequest.Owner == nil {
@@ -268,7 +268,7 @@ func (m *ApiHandler) DeleteHandler(ctx *gin.Context) {
 		return
 	}
 
-	jwtClaim := ctx.MustGet("JWT_CLAIMS").(middleware.GoogleClaims)
+	jwtClaim := ctx.MustGet("JWT_CLAIMS").(*middleware.AuthCustomClaims)
 
 	code := ctx.Param("code")
 

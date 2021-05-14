@@ -4,12 +4,12 @@ import {Col, Layout, Row, Typography, Alert} from 'antd';
 import './App.less';
 import CustomContent from './global/CustomContent';
 import GlobalProvider from './context/GlobalProvider';
-import CustomRightHeader from './global/CustomRightHeader';
+import Authentication from './components/Authentication';
 
 const { Header, Content, Footer } = Layout;
 
 const App = () => (
-    <Router basename={process.env.PUBLIC_URL}>
+    <Router basename={process.env.PUBLIC_URL || '/ui'}>
         <GlobalProvider>
             <Layout>
                 <Header className="header">
@@ -27,7 +27,7 @@ const App = () => (
                 <Footer>
                     <Row wrap={true} justify="space-between">
                         <Col>
-                            <CustomRightHeader/>
+                            <Authentication/>
                         </Col>
                         <Col>
                             &copy;2021 Created by Michael Rotmanov

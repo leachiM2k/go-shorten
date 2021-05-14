@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	serverMiddleware "github.com/leachim2k/go-shorten/pkg/server/middleware"
+	authMiddleware "github.com/leachim2k/go-shorten/pkg/auth/middleware"
 	"github.com/leachim2k/go-shorten/pkg/shorten"
 	"github.com/leachim2k/go-shorten/pkg/urlutil"
 	"net/http"
@@ -48,7 +48,7 @@ func shortenRouter(apiRoute *gin.RouterGroup) {
 	{
 		r.GET("/handle/:code", apiRouting.HandleCodeHandler)
 
-		r.Use(serverMiddleware.JWTAuthenticator)
+		r.Use(authMiddleware.JWTAuthenticator)
 
 		r.PUT("/", apiRouting.MissingCodeHandler)
 		r.DELETE("/", apiRouting.MissingCodeHandler)

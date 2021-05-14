@@ -56,18 +56,18 @@ A browser window should open automatically. Otherwise please visit http://localh
 
 A proxy is already configured and points to the backend at  http://localhost:8080
 
-# Recently added features
+# Feature Roadmap
 
-* [x] Get Description automatically by parsing the given URL (API ready at: /api/url/meta/?url=...)
-
-# Missing features
-
-* [ ] Generate QR Code for an URL (API ready at: /api/url/qrcode/?url=...)
+* [x] Get Description automatically by parsing the given URL (API ready at: /api/url/meta/?url=...) (2021-04-28)
+* [ ] Generate QR Code for an URL
+    * [x] API (ready at: /api/url/qrcode/?url=...)
+    * [ ] UI
 * [ ] Add more backends:
-    * [ ] File
+    * [x] File storage (2021-05-06)
     * [ ] MySQL
     * [ ] Key-Value-Store
 * [ ] Add more authentication methods:
+    * [ ] Add more providers (Facebook, Slack, GitHub)
     * [ ] OAuth2 JWT
     * [ ] Username:Password
     * [ ] Special Admin Header

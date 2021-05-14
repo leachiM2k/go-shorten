@@ -17,7 +17,7 @@ type fileBackend struct{}
 func (m *fileBackend) All(owner string) (*[]*Entity, error) {
 	entities := make([]*Entity, 0)
 
-	dirEntries, err := os.ReadDir(path.Join(baseDir, owner[:2], owner))
+	dirEntries, err := os.ReadDir(path.Join(baseDir, owner[:4], owner))
 	if err != nil {
 		return &entities, nil
 	}
@@ -41,7 +41,7 @@ func NewFileBackend() Backend {
 }
 
 func buildPath(owner string, code string) string {
-	return path.Join(baseDir, owner[:2], owner, code)
+	return path.Join(baseDir, owner[:4], owner, code)
 }
 
 func (m *fileBackend) Create(request CreateRequest) (*Entity, error) {

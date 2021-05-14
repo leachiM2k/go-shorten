@@ -6,11 +6,11 @@ import {GlobalContext} from '../context/GlobalProvider';
 
 export function NotFound() {
     const location = useLocation();
-    const { state: { user } } = useContext(GlobalContext);
+    const { state: { user, token } } = useContext(GlobalContext);
     const [loading, setLoading] = useState(true);
 
     const fetchDataRaw = async () => {
-        if (user === null || !user.token) {
+        if (!token) {
             setLoading(false);
             return;
         }
@@ -19,7 +19,7 @@ export function NotFound() {
         try {
             const result = await client.get('/api/shorten/handle/' + location.pathname, {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             });
             window.location.href = result.data;

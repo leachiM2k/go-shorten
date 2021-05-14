@@ -9,7 +9,7 @@ import LoggedOutHomepage from '../components/StartPage/LoggedOutHomepage';
 const DrawerForm = lazy(() => import('../components/DrawerForm'))
 
 export default function StartPage(props) {
-    const { state: { loggedIn, user } } = useContext(GlobalContext);
+    const { state: { user, token } } = useContext(GlobalContext);
     const [drawerMode, setDrawerMode] = useState(null);
     const [formSaving, setFormSaving] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function StartPage(props) {
     const [form] = Form.useForm();
 
     const fetchDataRaw = async () => {
-        if (user === null || !user || !user.token) {
+        if (!token) {
             return;
         }
 
@@ -26,7 +26,7 @@ export default function StartPage(props) {
         try {
             const result = await client.get('/api/shorten/', {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             });
             setAllShorts(result.data);
@@ -53,7 +53,7 @@ export default function StartPage(props) {
         try {
             const options = {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             }
             if (values.createdAt) {
@@ -74,7 +74,7 @@ export default function StartPage(props) {
         try {
             await client.delete('/api/shorten/' + code, {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             });
             fetchDataRaw()
@@ -89,7 +89,7 @@ export default function StartPage(props) {
         try {
             const result = await client.get('/api/shorten/' + code, {
                 headers: {
-                    'Authorization': 'Bearer ' + user.token,
+                    'Authorization': 'Bearer ' + token,
                 }
             });
             setEditValues(result.data);
@@ -113,9 +113,9 @@ export default function StartPage(props) {
         setDrawerMode(null);
     };
 
-    if (loggedIn === false) {
+    if (user === null) {
         return <LoggedOutHomepage/>;
-    } else if (loggedIn === true) {
+    } else if (user && user.p) {
         return (
             <Row gutter={10}>
                 <Col span={24} md={{ span: 18, offset: 3 }} lg={{ span: 12, offset: 6 }}>

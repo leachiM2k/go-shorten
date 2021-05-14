@@ -1,3 +1,5 @@
+# cloud.google.com/go v0.26.0
+cloud.google.com/go/compute/metadata
 # github.com/KyleBanks/depth v1.2.1
 github.com/KyleBanks/depth
 # github.com/PuerkitoBio/purell v1.1.1
@@ -15,6 +17,10 @@ github.com/ajstarks/svgo
 github.com/boombuler/barcode
 github.com/boombuler/barcode/qr
 github.com/boombuler/barcode/utils
+# github.com/danilopolani/gocialite v1.0.2
+## explicit
+github.com/danilopolani/gocialite/drivers
+github.com/danilopolani/gocialite/structs
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 ## explicit
 github.com/dgrijalva/jwt-go
@@ -132,11 +138,26 @@ github.com/ugorji/go/codec
 golang.org/x/crypto/sha3
 # golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
 ## explicit
+golang.org/x/net/context
+golang.org/x/net/context/ctxhttp
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/idna
 golang.org/x/net/webdav
 golang.org/x/net/webdav/internal/xml
+# golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
+golang.org/x/oauth2
+golang.org/x/oauth2/amazon
+golang.org/x/oauth2/bitbucket
+golang.org/x/oauth2/facebook
+golang.org/x/oauth2/foursquare
+golang.org/x/oauth2/github
+golang.org/x/oauth2/google
+golang.org/x/oauth2/internal
+golang.org/x/oauth2/jws
+golang.org/x/oauth2/jwt
+golang.org/x/oauth2/linkedin
+golang.org/x/oauth2/slack
 # golang.org/x/sys v0.0.0-20210412220455-f1c623a9e750
 ## explicit
 golang.org/x/sys/cpu
@@ -159,6 +180,17 @@ golang.org/x/tools/go/ast/astutil
 golang.org/x/tools/go/buildutil
 golang.org/x/tools/go/internal/cgo
 golang.org/x/tools/go/loader
+# google.golang.org/appengine v1.1.0
+google.golang.org/appengine
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/app_identity
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/modules
+google.golang.org/appengine/internal/remote_api
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/urlfetch
 # google.golang.org/protobuf v1.26.0
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
@@ -187,5 +219,11 @@ google.golang.org/protobuf/reflect/protoregistry
 google.golang.org/protobuf/runtime/protoiface
 google.golang.org/protobuf/runtime/protoimpl
 google.golang.org/protobuf/types/descriptorpb
+# gopkg.in/danilopolani/gocialite.v1 v1.0.2
+## explicit
+gopkg.in/danilopolani/gocialite.v1
+# gopkg.in/oleiade/reflections.v1 v1.0.0
+## explicit
+gopkg.in/oleiade/reflections.v1
 # gopkg.in/yaml.v2 v2.4.0
 gopkg.in/yaml.v2

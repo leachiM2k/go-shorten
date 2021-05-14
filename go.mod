@@ -6,6 +6,7 @@ require (
 	github.com/aaronarduino/goqrsvg v0.0.0-20170617203649-603647895681
 	github.com/ajstarks/svgo v0.0.0-20210406150507-75cfd577ce75
 	github.com/boombuler/barcode v1.0.1
+	github.com/danilopolani/gocialite v1.0.2 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
 	github.com/gin-gonic/gin v1.7.1
@@ -35,4 +36,6 @@ require (
 	golang.org/x/net v0.0.0-20210410081132-afb366fc7cd1
 	golang.org/x/sys v0.0.0-20210412220455-f1c623a9e750 // indirect
 	golang.org/x/tools v0.1.0 // indirect
+	gopkg.in/danilopolani/gocialite.v1 v1.0.2
+	gopkg.in/oleiade/reflections.v1 v1.0.0 // indirect
 )
