@@ -1,7 +1,8 @@
-package dataservice
+package backend
 
 import (
 	"encoding/json"
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -14,8 +15,8 @@ const baseDir = "./.data"
 
 type fileBackend struct{}
 
-func (m *fileBackend) All(owner string) (*[]*Entity, error) {
-	entities := make([]*Entity, 0)
+func (m *fileBackend) All(owner string) (*[]*interfaces.Entity, error) {
+	entities := make([]*interfaces.Entity, 0)
 
 	dirEntries, err := os.ReadDir(path.Join(baseDir, owner[:4], owner))
 	if err != nil {
@@ -35,7 +36,7 @@ func (m *fileBackend) All(owner string) (*[]*Entity, error) {
 	return &entities, nil
 }
 
-func NewFileBackend() Backend {
+func NewFileBackend() interfaces.Backend {
 	rand.Seed(time.Now().UnixNano())
 	return &fileBackend{}
 }
@@ -44,8 +45,8 @@ func buildPath(owner string, code string) string {
 	return path.Join(baseDir, owner[:4], owner, code)
 }
 
-func (m *fileBackend) Create(request CreateRequest) (*Entity, error) {
-	entity := Entity{
+func (m *fileBackend) Create(request interfaces.CreateRequest) (*interfaces.Entity, error) {
+	entity := interfaces.Entity{
 		ID:         rand.Int(),
 		Owner:      *request.Owner,
 		Link:       *request.Link,
@@ -89,8 +90,8 @@ func (m *fileBackend) Create(request CreateRequest) (*Entity, error) {
 	return &entity, nil
 }
 
-func (m *fileBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
-	entity := StatEntity{
+func (m *fileBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*interfaces.StatEntity, error) {
+	entity := interfaces.StatEntity{
 		ShortenerID: shortenerId,
 		ClientIP:    clientIp,
 		UserAgent:   userAgent,
@@ -117,7 +118,7 @@ func (m *fileBackend) CreateStat(shortenerId int, clientIp string, userAgent str
 	return &entity, nil
 }
 
-func (m *fileBackend) AllStats(code string) (*[]*StatEntity, error) {
+func (m *fileBackend) AllStats(code string) (*[]*interfaces.StatEntity, error) {
 	entity, err := m.Read(code)
 	if err != nil {
 		return nil, err
@@ -129,7 +130,7 @@ func (m *fileBackend) AllStats(code string) (*[]*StatEntity, error) {
 		return nil, err
 	}
 
-	entities := make([]*StatEntity, 0)
+	entities := make([]*interfaces.StatEntity, 0)
 
 	for _, entry := range dirEntries {
 		bytes, err := ioutil.ReadFile(path.Join(dirPath, entry.Name()))
@@ -137,7 +138,7 @@ func (m *fileBackend) AllStats(code string) (*[]*StatEntity, error) {
 			return nil, nil
 		}
 
-		entity := StatEntity{}
+		entity := interfaces.StatEntity{}
 
 		err = json.Unmarshal(bytes, &entity)
 		if err != nil {
@@ -150,7 +151,7 @@ func (m *fileBackend) AllStats(code string) (*[]*StatEntity, error) {
 	return &entities, nil
 }
 
-func (m *fileBackend) Read(code string) (*Entity, error) {
+func (m *fileBackend) Read(code string) (*interfaces.Entity, error) {
 	ownerBytes, err := ioutil.ReadFile(path.Join(baseDir, "codeowner", code[:2], code))
 	if err != nil {
 		return nil, nil
@@ -163,7 +164,7 @@ func (m *fileBackend) Read(code string) (*Entity, error) {
 		return nil, nil
 	}
 
-	entity := Entity{}
+	entity := interfaces.Entity{}
 
 	err = json.Unmarshal(bytes, &entity)
 	if err != nil {
@@ -173,7 +174,7 @@ func (m *fileBackend) Read(code string) (*Entity, error) {
 	return &entity, nil
 }
 
-func (m *fileBackend) Update(entity *Entity) (*Entity, error) {
+func (m *fileBackend) Update(entity *interfaces.Entity) (*interfaces.Entity, error) {
 	marshal, err := json.Marshal(entity)
 	if err != nil {
 		return nil, err

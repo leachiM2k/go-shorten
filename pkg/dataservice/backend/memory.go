@@ -1,6 +1,7 @@
-package dataservice
+package backend
 
 import (
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"math/rand"
 	"sync"
 	"time"
@@ -8,25 +9,25 @@ import (
 
 type backend struct {
 	mutex       sync.RWMutex
-	entityCache map[string]Entity
-	statCache   map[int][]*StatEntity
+	entityCache map[string]interfaces.Entity
+	statCache   map[int][]*interfaces.StatEntity
 }
 
-func (m *backend) All(owner string) (*[]*Entity, error) {
+func (m *backend) All(owner string) (*[]*interfaces.Entity, error) {
 	// TODO: implement me
 	panic("implement me")
 }
 
-func NewInmemoryBackend() Backend {
+func NewInmemoryBackend() interfaces.Backend {
 	rand.Seed(time.Now().UnixNano())
 	return &backend{
-		entityCache: map[string]Entity{},
-		statCache:   map[int][]*StatEntity{},
+		entityCache: map[string]interfaces.Entity{},
+		statCache:   map[int][]*interfaces.StatEntity{},
 	}
 }
 
-func (m *backend) Create(request CreateRequest) (*Entity, error) {
-	entity := Entity{
+func (m *backend) Create(request interfaces.CreateRequest) (*interfaces.Entity, error) {
+	entity := interfaces.Entity{
 		ID:         rand.Int(),
 		Owner:      *request.Owner,
 		Link:       *request.Link,
@@ -46,8 +47,8 @@ func (m *backend) Create(request CreateRequest) (*Entity, error) {
 	return &entity, nil
 }
 
-func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
-	entity := StatEntity{
+func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*interfaces.StatEntity, error) {
+	entity := interfaces.StatEntity{
 		ShortenerID: shortenerId,
 		ClientIP:    clientIp,
 		UserAgent:   userAgent,
@@ -57,7 +58,7 @@ func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string,
 	m.mutex.Lock()
 	stats, ok := m.statCache[shortenerId]
 	if !ok {
-		stats = make([]*StatEntity, 0)
+		stats = make([]*interfaces.StatEntity, 0)
 	}
 	m.statCache[shortenerId] = append(stats, &entity)
 	m.mutex.Unlock()
@@ -65,7 +66,7 @@ func (m *backend) CreateStat(shortenerId int, clientIp string, userAgent string,
 	return &entity, nil
 }
 
-func (m *backend) AllStats(code string) (*[]*StatEntity, error) {
+func (m *backend) AllStats(code string) (*[]*interfaces.StatEntity, error) {
 	entity, err := m.Read(code)
 	if err != nil {
 		return nil, err
@@ -82,7 +83,7 @@ func (m *backend) AllStats(code string) (*[]*StatEntity, error) {
 	return &stats, nil
 }
 
-func (m *backend) Read(code string) (*Entity, error) {
+func (m *backend) Read(code string) (*interfaces.Entity, error) {
 	m.mutex.RLock()
 	entity, ok := m.entityCache[code]
 	m.mutex.RUnlock()
@@ -94,7 +95,7 @@ func (m *backend) Read(code string) (*Entity, error) {
 	return &entity, nil
 }
 
-func (m *backend) Update(entity *Entity) (*Entity, error) {
+func (m *backend) Update(entity *interfaces.Entity) (*interfaces.Entity, error) {
 	m.mutex.Lock()
 	m.entityCache[entity.Code] = *entity
 	m.mutex.Unlock()

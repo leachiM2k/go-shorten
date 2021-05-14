@@ -1,10 +1,25 @@
 package options
 
 import (
+	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/pkg/errors"
-	"os"
-	"strconv"
 )
+
+type Config struct {
+	Server struct {
+		Port int `yaml:"port" env:"PORT" env-default:"8080"`
+	} `yaml:"server"`
+	Storage struct {
+		Engine string `yaml:"engine" env:"STORAGE" env-default:"postgresql"`
+		DBUrl  string `yaml:"dburl" env:"DATABASE_URL" env-default:"postgres://shorten:shorten@localhost:16541/shorten_dev?sslmode=disable"`
+	} `yaml:"storage"`
+	AuthServices []struct {
+		Name         string `yaml:"name"`
+		ClientId     string `yaml:"clientid"`
+		ClientSecret string `yaml:"clientsecret"`
+		Prefix       string `yaml:"prefix"`
+	} `yaml:"authservices"`
+}
 
 // Current is the de-facto Config used.
 var Current = ConfigWithDefaults()
@@ -16,39 +31,23 @@ const (
 	BackendFile       = "file"
 )
 
-func getOr(this, or string) string {
-	if len(this) == 0 {
-		return or
-	}
-	return this
-}
-
 // ConfigWithDefaults sets default values and returns a new Config.
 func ConfigWithDefaults() *Config {
-	defaultPort := 80
-	if i, err := strconv.ParseInt(os.Getenv("PORT"), 10, 32); err == nil {
-		defaultPort = int(i)
+	var cfg Config
+	err := cleanenv.ReadConfig("config.yml", &cfg)
+	if err != nil {
+		return nil
 	}
-	return &Config{
-		RESTListenPort: defaultPort,
-		DBConnection:   getOr(os.Getenv("DATABASE_URL"), "postgres://shorten:shorten@localhost:16541/shorten_dev?sslmode=disable"),
-		StorageBackend: getOr(os.Getenv("STORAGE"), BackendPostgreSQL),
-	}
-}
 
-// Config holds information that can be modified by config or command line flags.
-type Config struct {
-	StorageBackend string
-	RESTListenPort int
-	DBConnection   string
+	return &cfg
 }
 
 func (c *Config) Validate() error {
-	if c.StorageBackend != BackendInMemory && c.StorageBackend != BackendPostgreSQL && c.StorageBackend != BackendMySQL && c.StorageBackend != BackendFile {
+	if c.Storage.Engine != BackendInMemory && c.Storage.Engine != BackendPostgreSQL && c.Storage.Engine != BackendMySQL && c.Storage.Engine != BackendFile {
 		return errors.Errorf("storage backend must be set")
 	}
-	if c.StorageBackend == BackendPostgreSQL || c.StorageBackend == BackendMySQL && len(c.DBConnection) == 0 {
-		return errors.Errorf("db connection string must be set for backend type %s", c.StorageBackend)
+	if c.Storage.Engine == BackendPostgreSQL || c.Storage.Engine == BackendMySQL && len(c.Storage.DBUrl) == 0 {
+		return errors.Errorf("db connection string must be set for backend type %s", c.Storage.Engine)
 	}
 	return nil
 }

@@ -1,7 +1,8 @@
-package dataservice
+package backend
 
 import (
 	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"github.com/leachim2k/go-shorten/pkg/models"
 	"github.com/mrcrgl/pflog/log"
 	logOriginal "log"
@@ -12,14 +13,14 @@ import (
 type dbBackend struct {
 }
 
-func NewDBBackend() Backend {
-	models.InitDB("postgres", options.Current.DBConnection, logOriginal.New(os.Stdout, "[sql] ", logOriginal.LstdFlags))
+func NewDBBackend() interfaces.Backend {
+	models.InitDB("postgres", options.Current.Storage.DBUrl, logOriginal.New(os.Stdout, "[sql] ", logOriginal.LstdFlags))
 
 	return &dbBackend{}
 }
 
-func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
-	return &Entity{
+func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *interfaces.Entity {
+	return &interfaces.Entity{
 		ID:          dbItem.ID,
 		Owner:       dbItem.Owner,
 		Link:        dbItem.Link,
@@ -35,8 +36,8 @@ func ConvertDbItemToEntity(dbItem *models.ShortenerItem) *Entity {
 	}
 }
 
-func ConvertStatDbItemToEntity(dbItem *models.ShortStatItem) *StatEntity {
-	return &StatEntity{
+func ConvertStatDbItemToEntity(dbItem *models.ShortStatItem) *interfaces.StatEntity {
+	return &interfaces.StatEntity{
 		ClientIP:  dbItem.ClientIP,
 		UserAgent: dbItem.UserAgent,
 		Referer:   dbItem.Referer,
@@ -44,7 +45,7 @@ func ConvertStatDbItemToEntity(dbItem *models.ShortStatItem) *StatEntity {
 	}
 }
 
-func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error) {
+func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*interfaces.StatEntity, error) {
 	dbItem := models.ShortStatItem{
 		ShortenerID: shortenerId,
 		ClientIP:    clientIp,
@@ -57,7 +58,7 @@ func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent strin
 		log.Infof("create stat failed with error: %#v", err)
 		return nil, err
 	}
-	return &StatEntity{
+	return &interfaces.StatEntity{
 		ShortenerID: dbItem.ShortenerID,
 		ClientIP:    dbItem.ClientIP,
 		UserAgent:   dbItem.UserAgent,
@@ -66,7 +67,7 @@ func (m *dbBackend) CreateStat(shortenerId int, clientIp string, userAgent strin
 	}, nil
 }
 
-func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
+func (m *dbBackend) Create(request interfaces.CreateRequest) (*interfaces.Entity, error) {
 	dbItem := models.ShortenerItem{
 		Link:        *request.Link,
 		Owner:       *request.Owner,
@@ -88,13 +89,13 @@ func (m *dbBackend) Create(request CreateRequest) (*Entity, error) {
 	return ConvertDbItemToEntity(dbResult), nil
 }
 
-func (m *dbBackend) All(owner string) (*[]*Entity, error) {
+func (m *dbBackend) All(owner string) (*[]*interfaces.Entity, error) {
 	items, err := models.AllShortsByOwner(owner)
 	if err != nil {
 		return nil, err
 	}
 
-	entities := make([]*Entity, len(items))
+	entities := make([]*interfaces.Entity, len(items))
 	for i, item := range items {
 		entities[i] = ConvertDbItemToEntity(item)
 	}
@@ -102,13 +103,13 @@ func (m *dbBackend) All(owner string) (*[]*Entity, error) {
 	return &entities, nil
 }
 
-func (m *dbBackend) AllStats(code string) (*[]*StatEntity, error) {
+func (m *dbBackend) AllStats(code string) (*[]*interfaces.StatEntity, error) {
 	items, err := models.AllShortStats(code)
 	if err != nil {
 		return nil, err
 	}
 
-	entities := make([]*StatEntity, len(items))
+	entities := make([]*interfaces.StatEntity, len(items))
 	for i, item := range items {
 		entities[i] = ConvertStatDbItemToEntity(item)
 	}
@@ -116,7 +117,7 @@ func (m *dbBackend) AllStats(code string) (*[]*StatEntity, error) {
 	return &entities, nil
 }
 
-func (m *dbBackend) Read(code string) (*Entity, error) {
+func (m *dbBackend) Read(code string) (*interfaces.Entity, error) {
 	entity, err := models.GetShortByCode(code)
 	if entity == nil || err != nil {
 		return nil, err
@@ -125,7 +126,7 @@ func (m *dbBackend) Read(code string) (*Entity, error) {
 	return ConvertDbItemToEntity(entity), nil
 }
 
-func (m *dbBackend) Update(entity *Entity) (*Entity, error) {
+func (m *dbBackend) Update(entity *interfaces.Entity) (*interfaces.Entity, error) {
 	dbEntity := models.ShortenerItem{
 		Owner:       entity.Owner,
 		Code:        entity.Code,

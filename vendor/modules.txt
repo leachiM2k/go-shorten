@@ -1,5 +1,7 @@
 # cloud.google.com/go v0.26.0
 cloud.google.com/go/compute/metadata
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
 # github.com/KyleBanks/depth v1.2.1
 github.com/KyleBanks/depth
 # github.com/PuerkitoBio/purell v1.1.1
@@ -64,8 +66,13 @@ github.com/gomodule/oauth1/oauth
 ## explicit
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
+# github.com/ilyakaznacheev/cleanenv v1.2.5
+## explicit
+github.com/ilyakaznacheev/cleanenv
 # github.com/inconshreveable/mousetrap v1.0.0
 github.com/inconshreveable/mousetrap
+# github.com/joho/godotenv v1.3.0
+github.com/joho/godotenv
 # github.com/jonboulle/clockwork v0.1.0
 ## explicit
 github.com/jonboulle/clockwork
@@ -230,3 +237,5 @@ gopkg.in/danilopolani/gocialite.v1
 gopkg.in/oleiade/reflections.v1
 # gopkg.in/yaml.v2 v2.4.0
 gopkg.in/yaml.v2
+# olympos.io/encoding/edn v0.0.0-20200308123125-93e3b8dd0e24
+olympos.io/encoding/edn

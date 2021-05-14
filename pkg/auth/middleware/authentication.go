@@ -6,6 +6,7 @@ import (
 	"github.com/danilopolani/gocialite/structs"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
 	"golang.org/x/oauth2"
 	"net/http"
 	"os"
@@ -106,9 +107,16 @@ func ValidateJWT(tokenString string) (*AuthCustomClaims, error) {
 }
 
 func BuildJWTToken(user *structs.User, token *oauth2.Token, provider string) (*oauth2.Token, error) {
-	providerPrefix := map[string]string{
-		"facebook": "f",
-		"google":   "g",
+	prefix := ""
+	for _, service := range options.Current.AuthServices {
+		if service.Name == provider {
+			prefix = service.Prefix + "_"
+		}
+	}
+
+	expiry := token.Expiry
+	if expiry.Unix() == 0 || expiry.IsZero() {
+		expiry = time.Now().AddDate(0, 1, 0)
 	}
 
 	claims := &AuthCustomClaims{
@@ -116,9 +124,9 @@ func BuildJWTToken(user *structs.User, token *oauth2.Token, provider string) (*o
 		Email:    user.Email,
 		Provider: provider,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: token.Expiry.Unix(),
+			ExpiresAt: expiry.Unix(),
 			Id:        user.ID,
-			Subject:   providerPrefix[provider] + "_" + user.ID,
+			Subject:   prefix + user.ID,
 			IssuedAt:  time.Now().Unix(),
 			Issuer:    issuer,
 		},

@@ -6,6 +6,7 @@ import (
 	"github.com/jonboulle/clockwork"
 	"github.com/leachim2k/go-shorten/pkg/auth/middleware"
 	"github.com/leachim2k/go-shorten/pkg/dataservice"
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"github.com/mrcrgl/pflog/log"
 	"net/http"
 	"sync"
@@ -188,7 +189,7 @@ func (m *ApiHandler) AddHandler(ctx *gin.Context) {
 		return
 	}
 
-	var createRequest dataservice.CreateRequest
+	var createRequest interfaces.CreateRequest
 	err := ctx.BindJSON(&createRequest)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -228,7 +229,7 @@ func (m *ApiHandler) UpdateHandler(ctx *gin.Context) {
 		return
 	}
 
-	var updateRequest dataservice.UpdateRequest
+	var updateRequest interfaces.UpdateRequest
 	err := ctx.BindJSON(&updateRequest)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)

@@ -3,7 +3,7 @@ package shorten
 import (
 	"github.com/gomodule/oauth1/oauth"
 	"github.com/jonboulle/clockwork"
-	"github.com/leachim2k/go-shorten/pkg/dataservice"
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"github.com/mrcrgl/pflog/log"
 	"math/rand"
 	"net/url"
@@ -12,10 +12,10 @@ import (
 
 type Handler struct {
 	Clock   clockwork.Clock
-	Backend dataservice.Backend
+	Backend interfaces.Backend
 }
 
-func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
+func NewHandler(clock clockwork.Clock, backend interfaces.Backend) *Handler {
 	rand.Seed(clock.Now().UnixNano())
 	return &Handler{
 		Clock:   clock,
@@ -23,7 +23,7 @@ func NewHandler(clock clockwork.Clock, backend dataservice.Backend) *Handler {
 	}
 }
 
-func (m *Handler) GetAll(owner string) (*[]*dataservice.Entity, error) {
+func (m *Handler) GetAll(owner string) (*[]*interfaces.Entity, error) {
 	entities, err := m.Backend.All(owner)
 	if err != nil {
 		log.Infof("error during read from backend: %s", err)
@@ -37,7 +37,7 @@ func (m *Handler) GetAll(owner string) (*[]*dataservice.Entity, error) {
 	return entities, nil
 }
 
-func (m *Handler) Get(code string) (*dataservice.Entity, error) {
+func (m *Handler) Get(code string) (*interfaces.Entity, error) {
 	entity, err := m.Backend.Read(code)
 	if err != nil {
 		log.Infof("error during read from backend: %s", err)
@@ -51,7 +51,7 @@ func (m *Handler) Get(code string) (*dataservice.Entity, error) {
 	return entity, nil
 }
 
-func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error) {
+func (m *Handler) ConvertEntityToLink(entity *interfaces.Entity) (string, error) {
 	if entity == nil {
 		return "", nil
 	}
@@ -70,7 +70,7 @@ func (m *Handler) ConvertEntityToLink(entity *dataservice.Entity) (string, error
 
 	entity.Count += 1
 
-	go func(updateEntity *dataservice.Entity) {
+	go func(updateEntity *interfaces.Entity) {
 		_, err := m.Backend.Update(updateEntity)
 		if err != nil {
 			log.Warningf("Could not update short count: %s", err)
@@ -128,7 +128,7 @@ func handleOauth1Link(link string) *string {
 	return &signedUrl
 }
 
-func (m *Handler) AddStat(shortenerId int, clientIp string, userAgent string, referer string) (*dataservice.StatEntity, error) {
+func (m *Handler) AddStat(shortenerId int, clientIp string, userAgent string, referer string) (*interfaces.StatEntity, error) {
 	entity, err := m.Backend.CreateStat(shortenerId, clientIp, userAgent, referer)
 	if err != nil {
 		return nil, err
@@ -136,7 +136,7 @@ func (m *Handler) AddStat(shortenerId int, clientIp string, userAgent string, re
 	return entity, nil
 }
 
-func (m *Handler) Add(request dataservice.CreateRequest) (*dataservice.Entity, error) {
+func (m *Handler) Add(request interfaces.CreateRequest) (*interfaces.Entity, error) {
 	if request.Code == "" {
 		request.Code = GenerateRandomString(8)
 	}
@@ -151,7 +151,7 @@ func (m *Handler) Delete(owner string, code string) error {
 	return m.Backend.Delete(owner, code)
 }
 
-func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*dataservice.Entity, error) {
+func (m *Handler) Update(code string, request interfaces.UpdateRequest) (*interfaces.Entity, error) {
 	entity, err := m.Backend.Read(code)
 	if entity == nil || err != nil {
 		return nil, err
@@ -181,7 +181,7 @@ func (m *Handler) Update(code string, request dataservice.UpdateRequest) (*datas
 	return entity, nil
 }
 
-func (m *Handler) GetStats(code string) (*[]*dataservice.StatEntity, error) {
+func (m *Handler) GetStats(code string) (*[]*interfaces.StatEntity, error) {
 	entities, err := m.Backend.AllStats(code)
 	if err != nil {
 		log.Infof("error during read stats from backend: %s", err)

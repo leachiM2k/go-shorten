@@ -8,6 +8,8 @@ env:
   global:
   - IMAGE=leachim2k/go-shorten
   - YES=1
+before_install:
+  - openssl aes-256-cbc -K $encrypted_df5a4730e217_key -iv $encrypted_df5a4730e217_iv -in config.yml.enc -out config.yml -d
 script:
 - make test
 - make push-container clean

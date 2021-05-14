@@ -3,6 +3,7 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/leachim2k/go-shorten/pkg/auth/middleware"
+	"github.com/leachim2k/go-shorten/pkg/cli/shorten/options"
 	"gopkg.in/danilopolani/gocialite.v1"
 	"net/http"
 	"net/url"
@@ -48,34 +49,20 @@ func redirectHandler(c *gin.Context) {
 		callbackUrl.Scheme = "http"
 	}
 
-	// In this case we use a map to store our secrets, but you can use dotenv or your framework configuration
-	// for example, in revel you could use revel.Config.StringDefault(provider + "_clientID", "") etc.
-	providerSecrets := map[string]map[string]string{
-		"facebook": {
-			"clientID":     "***REMOVED***",
-			"clientSecret": "***REMOVED***",
-		},
-		"google": {
-			"clientID":     "***REMOVED***",
-			"clientSecret": "***REMOVED***",
-		},
-	}
-
-	for s, m := range providerSecrets {
-		callbackUrl.Path = "/auth/" + s + "/callback"
-		m["redirectURL"] = callbackUrl.String()
-	}
-
-	providerScopes := map[string][]string{
-		"facebook": []string{},
-		"google":   []string{},
+	providerSecrets := map[string]map[string]string{}
+	for _, service := range options.Current.AuthServices {
+		callbackUrl.Path = "/auth/" + service.Name + "/callback"
+		providerSecrets[service.Name] = map[string]string{
+			"clientID":     service.ClientId,
+			"clientSecret": service.ClientSecret,
+			"redirectURL":  callbackUrl.String(),
+		}
 	}
 
 	providerData := providerSecrets[provider]
-	actualScopes := providerScopes[provider]
 	authURL, err := gocial.New().
 		Driver(provider).
-		Scopes(actualScopes).
+		Scopes([]string{}).
 		Redirect(
 			providerData["clientID"],
 			providerData["clientSecret"],
@@ -127,5 +114,4 @@ func callbackHandler(c *gin.Context) {
 	callbackUrl.RawQuery = q.Encode()
 
 	c.Redirect(http.StatusFound, callbackUrl.String())
-	//c.JSON(http.StatusOK, t2)
 }

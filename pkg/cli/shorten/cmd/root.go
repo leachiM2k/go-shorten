@@ -72,7 +72,7 @@ func NewRootCommand() *cobra.Command {
 
 			r.NoRoute(ui.NoRoute, shortenServer.NoRoute)
 
-			err = endless.ListenAndServe(":"+strconv.Itoa(options.Current.RESTListenPort), r)
+			err = endless.ListenAndServe(":"+strconv.Itoa(options.Current.Server.Port), r)
 			if err != nil {
 				log.Fatalf("Failed to boot application: %s", err)
 				return
@@ -80,9 +80,9 @@ func NewRootCommand() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().IntVar(&options.Current.RESTListenPort, "rest-listen-port", options.Current.RESTListenPort, "tcp port to listen for HTTP requests")
-	cmd.Flags().StringVar(&options.Current.DBConnection, "db-connection", options.Current.DBConnection, "database connection string")
-	cmd.Flags().StringVar(&options.Current.StorageBackend, "storage", options.Current.StorageBackend, "storage backend for shorts (memory, postgresql, mysql, file)")
+	cmd.Flags().IntVar(&options.Current.Server.Port, "rest-listen-port", options.Current.Server.Port, "tcp port to listen for HTTP requests")
+	cmd.Flags().StringVar(&options.Current.Storage.DBUrl, "db-connection", options.Current.Storage.DBUrl, "database connection string")
+	cmd.Flags().StringVar(&options.Current.Storage.Engine, "storage", options.Current.Storage.Engine, "storage backend for shorts (memory, postgresql, mysql, file)")
 
 	return cmd
 }

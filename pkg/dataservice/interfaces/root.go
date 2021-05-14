@@ -1,6 +1,16 @@
-package dataservice
+package interfaces
 
 import "time"
+
+type Backend interface {
+	Create(request CreateRequest) (*Entity, error)
+	CreateStat(shortenerId int, clientIp string, userAgent string, referer string) (*StatEntity, error)
+	Read(code string) (*Entity, error)
+	Update(entity *Entity) (*Entity, error)
+	Delete(owner string, code string) error
+	All(owner string) (*[]*Entity, error)
+	AllStats(code string) (*[]*StatEntity, error)
+}
 
 type Entity struct {
 	ID          int                     `json:"id,omitempty"`

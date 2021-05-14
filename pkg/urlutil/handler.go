@@ -7,7 +7,7 @@ import (
 	"github.com/boombuler/barcode/qr"
 	"github.com/hashicorp/golang-lru"
 	"github.com/jonboulle/clockwork"
-	"github.com/leachim2k/go-shorten/pkg/dataservice"
+	"github.com/leachim2k/go-shorten/pkg/dataservice/interfaces"
 	"github.com/pkg/errors"
 	"golang.org/x/net/html"
 	"image/png"
@@ -27,7 +27,7 @@ func NewHandler(clock clockwork.Clock, cache *lru.ARCCache) *Handler {
 	}
 }
 
-func (m *Handler) GetUrlMeta(url string) (*dataservice.HTMLMeta, error) {
+func (m *Handler) GetUrlMeta(url string) (*interfaces.HTMLMeta, error) {
 	meta, ok := m.Cache.Get(url)
 
 	if !ok {
@@ -41,7 +41,7 @@ func (m *Handler) GetUrlMeta(url string) (*dataservice.HTMLMeta, error) {
 		m.Cache.Add(url, meta)
 	}
 
-	return meta.(*dataservice.HTMLMeta), nil
+	return meta.(*interfaces.HTMLMeta), nil
 }
 
 type ImageFormat string
@@ -88,12 +88,12 @@ func (m *Handler) GetQrCodeSvg(writer io.Writer, url string) error {
 	return nil
 }
 
-func extract(resp io.Reader) *dataservice.HTMLMeta {
+func extract(resp io.Reader) *interfaces.HTMLMeta {
 	z := html.NewTokenizer(resp)
 
 	titleFound := false
 
-	hm := new(dataservice.HTMLMeta)
+	hm := new(interfaces.HTMLMeta)
 
 	for {
 		tt := z.Next()
