@@ -70,6 +70,10 @@ func NewRootCommand() *cobra.Command {
 			})
 			r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+			r.GET("/header/echo", func(context *gin.Context) {
+				context.JSON(200, context.Request.Header)
+			})
+
 			r.NoRoute(ui.NoRoute, shortenServer.NoRoute)
 
 			err = endless.ListenAndServe(":"+strconv.Itoa(options.Current.Server.Port), r)
