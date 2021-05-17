@@ -45,7 +45,8 @@ func redirectHandler(c *gin.Context) {
 	callbackUrl.Scheme = "http"
 
 	proto := c.Request.Header.Get("X-Forwarded-Proto")
-	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") {
+	cfVisitor := c.Request.Header.Get("Cf-Visitor")
+	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") || (cfVisitor != "" && strings.Contains(cfVisitor, "https")) {
 		callbackUrl.Scheme = "https"
 	}
 
@@ -104,7 +105,8 @@ func callbackHandler(c *gin.Context) {
 	callbackUrl.Scheme = "http"
 
 	proto := c.Request.Header.Get("X-Forwarded-Proto")
-	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") {
+	cfVisitor := c.Request.Header.Get("Cf-Visitor")
+	if c.Request.TLS != nil || (proto != "" && strings.ToLower(proto) == "https") || (cfVisitor != "" && strings.Contains(cfVisitor, "https")) {
 		callbackUrl.Scheme = "https"
 	}
 	callbackUrl.Path = "/ui/login/"
